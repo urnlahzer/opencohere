@@ -29,7 +29,6 @@ export interface NoteItem {
   folder_id: number | null;
   transcript: string | null;
   calendar_event_id: string | null;
-  cloud_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -371,7 +370,6 @@ declare global {
         format: "txt" | "md"
       ) => Promise<{ success: boolean; error?: string }>;
       searchNotes: (query: string, limit?: number) => Promise<NoteItem[]>;
-      updateNoteCloudId: (id: number, cloudId: string) => Promise<NoteItem>;
 
       // Folder operations
       getFolders: () => Promise<FolderItem[]>;

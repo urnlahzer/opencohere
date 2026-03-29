@@ -104,11 +104,6 @@ class DatabaseManager {
       } catch (err) {
         if (!err.message.includes("duplicate column")) throw err;
       }
-      try {
-        this.db.exec("ALTER TABLE notes ADD COLUMN cloud_id TEXT");
-      } catch (err) {
-        if (!err.message.includes("duplicate column")) throw err;
-      }
 
       this.db.exec(`
         CREATE VIRTUAL TABLE IF NOT EXISTS notes_fts USING fts5(
@@ -1230,16 +1225,6 @@ class DatabaseManager {
     }
   }
 
-  updateNoteCloudId(id, cloudId) {
-    try {
-      if (!this.db) throw new Error("Database not initialized");
-      this.db.prepare("UPDATE notes SET cloud_id = ? WHERE id = ?").run(cloudId, id);
-      return this.db.prepare("SELECT * FROM notes WHERE id = ?").get(id);
-    } catch (error) {
-      debugLogger.error("Error updating note cloud_id", { error: error.message }, "database");
-      throw error;
-    }
-  }
 
   cleanup() {
     try {

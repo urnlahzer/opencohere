@@ -102,11 +102,8 @@ export default function NoteEditor({ note, cloudEnabled, onDelete, onUpdate }: N
 
   const handleConfirmDelete = useCallback(async () => {
     await window.electronAPI.deleteNote(note.id);
-    if (cloudEnabled && note.cloud_id) {
-      syncNoteDeleteToCloud(note.cloud_id).catch(() => {});
-    }
     onDelete(note.id);
-  }, [note, cloudEnabled, onDelete]);
+  }, [note, onDelete]);
 
   return (
     <div className="flex flex-col h-full min-h-0">

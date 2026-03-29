@@ -566,10 +566,6 @@ class IPCHandlers {
       return this.databaseManager.searchNotes(query, limit);
     });
 
-    ipcMain.handle("db-update-note-cloud-id", async (event, id, cloudId) => {
-      return this.databaseManager.updateNoteCloudId(id, cloudId);
-    });
-
     ipcMain.handle("db-get-folders", async () => {
       return this.databaseManager.getFolders();
     });
