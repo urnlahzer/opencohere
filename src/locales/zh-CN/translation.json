@@ -88,21 +88,6 @@
     "quit": "退出",
     "cancel": "取消"
   },
-  "upgradePrompt": {
-    "paymentFailed": "我们无法处理你的付款",
-    "weeklyLimit": "你已达到本周的使用上限",
-    "pastDueDescription": "你目前使用的是免费版——别担心，每周仍有 {{limit}} 个词的额度。\n更新支付方式即可恢复无限制的 Pro 版。",
-    "limitDescription": "已使用 {{used}} / {{limit}} 个词。\n你的转录已保存并粘贴。",
-    "updatePayment": "更新支付方式",
-    "updatePaymentDescription": "恢复无限制的 Pro 版转录。",
-    "upgradeToPro": "升级到 Pro",
-    "upgradeDescription": "无限转录，每月最低 $8 起。",
-    "useApiKey": "使用自己的 API Key",
-    "useApiKeyDescription": "使用你自己的密钥，无限制使用。",
-    "switchToLocal": "切换到本地模式",
-    "switchToLocalDescription": "离线转录，无使用限制。",
-    "rollingWeeklyLimit": "滚动周限额"
-  },
   "windowControls": {
     "minimize": "最小化",
     "maximize": "最大化",
@@ -204,19 +189,9 @@
       "installButton": "安装更新",
       "availableButton": "有可用更新"
     },
-    "limit": {
-      "weeklyTitle": "已达到周限额",
-      "weeklyDescription": "你的额度按滚动方式重置。升级到 Pro 或使用自己的 API Key 可不受限制。"
-    },
     "accessibilityMissing": {
       "title": "需要辅助功能权限",
       "description": "我们检测到 OpenCohere 需要辅助功能权限才能正常工作。请在下方启用。"
-    },
-    "billing": {
-      "pastDueTitle": "我们无法处理你的付款",
-      "pastDueDescription": "别担心——你目前使用的是免费版。在设置中更新支付方式即可恢复 Pro 版。",
-      "bannerDescription": "你目前使用的是免费版——每周仍有 {{limit}} 个词的额度。更新支付方式即可恢复 Pro 版。",
-      "updatePayment": "更新支付方式"
     },
     "history": {
       "couldNotLoadTitle": "无法加载历史记录",
@@ -821,38 +796,23 @@
     "account": {
       "badges": {
         "free": "免费版",
-        "limitReached": "已达上限",
-        "pastDue": "逾期未付",
         "pro": "Pro",
         "business": "Business",
         "trial": "试用"
       },
-      "billing": {
-        "couldNotOpenDescription": "打开账单页面时出错，请重试。",
-        "couldNotOpenTitle": "无法打开账单",
-        "manageBilling": "管理账单",
-        "opening": "正在打开...",
-        "updatePaymentMethod": "更新支付方式"
-      },
       "checkout": {
         "couldNotOpenDescription": "打开结账页面时出错，请重试。",
         "couldNotOpenTitle": "无法打开结账页",
-        "opening": "正在打开...",
-        "upgradeToPro": "升级到 Pro"
+        "opening": "正在打开..."
       },
       "disabled": "已禁用",
       "notConfigured": "身份验证未配置",
       "notSignedIn": "未登录",
       "notSignedInDescription": "创建账户以解锁高级功能。",
       "offline": "离线",
-      "pastDue": {
-        "description": "你目前使用的是免费版。更新支付方式即可恢复 Pro 版。",
-        "title": "我们无法处理你的付款"
-      },
       "planDescriptions": {
         "freeUsage": "本周已使用 {{used}} / {{limit}} 个词",
         "nextBilling": "下次扣费：{{date}}",
-        "pastDue": "本周 {{used}} / {{limit}} 免费词数——更新支付方式以恢复 Pro",
         "trial": "剩余 {{days}} 天——无限转录",
         "unlimited": "无限制"
       },
@@ -872,12 +832,7 @@
       },
       "signedIn": "已登录",
       "title": "账户",
-      "toasts": {
-        "approachingLimit": {
-          "description": "本周已使用 {{used}} / {{limit}} 个免费词数。升级到 Pro 可享受无限使用。",
-          "title": "即将达到周限额"
-        }
-      },
+      "toasts": {},
       "trialCta": {
         "button": "免费创建账户",
         "description": "无限转录、优先处理等更多功能。",
@@ -1592,19 +1547,11 @@
     "referral": "获取免费一个月",
     "settings": "设置",
     "support": "支持",
-    "limitReached": "已达每周上限",
-    "limitReachedDescription": "升级到 Pro 即可无限转录。",
-    "upgradeToPro": "升级到 Pro",
-    "upgradeTitle": "升级到 Pro",
-    "upgradeDescription": "无限转录、实时转录等更多功能。",
-    "learnMore": "了解更多",
     "integrations": "集成",
     "defaultUser": "用户",
     "notSignedIn": "未登录"
   },
   "usage": {
-    "approachingLimit": "即将达到周限额",
-    "approachingLimitDescription": "你本周已使用 {{wordsUsed}} / {{limit}} 个免费词数。",
     "yourPlan": "你的套餐",
     "trial": "试用期（剩余 {{days}} 天）",
     "trial_other": "试用期（剩余 {{days}} 天）",
@@ -1614,13 +1561,10 @@
     "unlimited": "无限转录",
     "manageSubscription": "管理订阅",
     "weeklyUsage": "每周用量",
-    "limitReached": "已达上限",
     "free": "免费版",
     "wordsRemaining": "剩余 {{remaining}} 个词",
     "rollingLimit": "滚动周限额",
-    "upgradeToPro": "升级到 Pro",
-    "useYourOwnKey": "使用自己的 API Key",
-    "upgradeUnlimited": "升级到 Pro — 无限转录"
+    "useYourOwnKey": "使用自己的 API Key"
   },
   "support": {
     "joinDiscord": "加入 Discord",

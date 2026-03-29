@@ -88,21 +88,6 @@
     "quit": "Закрыть",
     "cancel": "Отмена"
   },
-  "upgradePrompt": {
-    "paymentFailed": "Не удалось обработать платёж",
-    "weeklyLimit": "Вы достигли недельного лимита",
-    "pastDueDescription": "Сейчас вы на бесплатном плане — не волнуйтесь, у вас есть {{limit}} слов в неделю.\nОбновите способ оплаты, чтобы вернуться к безлимитному Pro.",
-    "limitDescription": "Использовано {{used}} из {{limit}} слов.\nВаша транскрипция сохранена и вставлена.",
-    "updatePayment": "Обновить способ оплаты",
-    "updatePaymentDescription": "Вернитесь к безлимитным Pro-транскрипциям.",
-    "upgradeToPro": "Перейти на Pro",
-    "upgradeDescription": "Безлимитные транскрипции от $8/мес.",
-    "useApiKey": "Использовать свой API-ключ",
-    "useApiKeyDescription": "Свой ключ — без ограничений.",
-    "switchToLocal": "Перейти на локальный режим",
-    "switchToLocalDescription": "Офлайн-транскрипция. Без ограничений.",
-    "rollingWeeklyLimit": "Скользящий недельный лимит"
-  },
   "windowControls": {
     "minimize": "Свернуть",
     "maximize": "Развернуть",
@@ -204,19 +189,9 @@
       "installButton": "Установить обновление",
       "availableButton": "Доступно обновление"
     },
-    "limit": {
-      "weeklyTitle": "Недельный лимит достигнут",
-      "weeklyDescription": "Ваш лимит обновляется на скользящей основе. Перейдите на Pro или используйте свой API-ключ для безлимитного использования."
-    },
     "accessibilityMissing": {
       "title": "Необходимы разрешения универсального доступа",
       "description": "Мы обнаружили, что OpenCohere нуждается в разрешениях универсального доступа для корректной работы. Включите их ниже."
-    },
-    "billing": {
-      "pastDueTitle": "Не удалось обработать платёж",
-      "pastDueDescription": "Не волнуйтесь — сейчас вы на бесплатном плане. Обновите способ оплаты в настройках, чтобы вернуться к Pro.",
-      "bannerDescription": "Сейчас вы на бесплатном плане — у вас есть {{limit}} слов в неделю. Обновите способ оплаты, чтобы вернуться к Pro.",
-      "updatePayment": "Обновить платёж"
     },
     "history": {
       "couldNotLoadTitle": "Не удалось загрузить историю",
@@ -821,38 +796,23 @@
     "account": {
       "badges": {
         "free": "Бесплатный",
-        "limitReached": "Лимит достигнут",
-        "pastDue": "Просрочен",
         "pro": "Pro",
         "business": "Business",
         "trial": "Пробный"
       },
-      "billing": {
-        "couldNotOpenDescription": "Не удалось открыть страницу оплаты. Попробуйте ещё раз.",
-        "couldNotOpenTitle": "Не удалось открыть оплату",
-        "manageBilling": "Управление оплатой",
-        "opening": "Открытие...",
-        "updatePaymentMethod": "Обновить способ оплаты"
-      },
       "checkout": {
         "couldNotOpenDescription": "Не удалось открыть страницу оформления. Попробуйте ещё раз.",
         "couldNotOpenTitle": "Не удалось открыть оформление",
-        "opening": "Открытие...",
-        "upgradeToPro": "Перейти на Pro"
+        "opening": "Открытие..."
       },
       "disabled": "Отключено",
       "notConfigured": "Аутентификация не настроена",
       "notSignedIn": "Вы не вошли в систему",
       "notSignedInDescription": "Создайте аккаунт, чтобы разблокировать премиум-функции.",
       "offline": "Нет сети",
-      "pastDue": {
-        "description": "Сейчас вы на бесплатном плане. Обновите способ оплаты, чтобы вернуться к Pro.",
-        "title": "Не удалось обработать платёж"
-      },
       "planDescriptions": {
         "freeUsage": "{{used}} / {{limit}} слов на этой неделе",
         "nextBilling": "Следующее списание: {{date}}",
-        "pastDue": "{{used}} / {{limit}} бесплатных слов на этой неделе — обновите платёж для восстановления Pro",
         "trial": "Осталось {{days}} дней — безлимитные транскрипции",
         "unlimited": "Без ограничений"
       },
@@ -872,12 +832,7 @@
       },
       "signedIn": "Вы вошли",
       "title": "Аккаунт",
-      "toasts": {
-        "approachingLimit": {
-          "description": "Вы использовали {{used}} из {{limit}} бесплатных слов на этой неделе. Перейдите на Pro для безлимитного использования.",
-          "title": "Приближение к недельному лимиту"
-        }
-      },
+      "toasts": {},
       "trialCta": {
         "button": "Создать бесплатный аккаунт",
         "description": "Безлимитные транскрипции, приоритетная обработка и многое другое.",
@@ -1592,19 +1547,11 @@
     "referral": "Получить бесплатный месяц",
     "settings": "Настройки",
     "support": "Поддержка",
-    "limitReached": "Недельный лимит достигнут",
-    "limitReachedDescription": "Перейдите на Pro для безлимитных транскрипций.",
-    "upgradeToPro": "Перейти на Pro",
-    "upgradeTitle": "Перейдите на Pro",
-    "upgradeDescription": "Безлимитные транскрипции, транскрипция в реальном времени и многое другое.",
-    "learnMore": "Узнать больше",
     "integrations": "Интеграции",
     "defaultUser": "Пользователь",
     "notSignedIn": "Не авторизован"
   },
   "usage": {
-    "approachingLimit": "Приближается недельный лимит",
-    "approachingLimitDescription": "На этой неделе использовано {{wordsUsed}} / {{limit}} слов.",
     "yourPlan": "Ваш тариф",
     "trial": "Пробный период ({{days}} дн.)",
     "trial_other": "Пробный период ({{days}} дн.)",
@@ -1614,13 +1561,10 @@
     "unlimited": "Без ограничений",
     "manageSubscription": "Управление подпиской",
     "weeklyUsage": "За неделю",
-    "limitReached": "Лимит достигнут",
     "free": "Бесплатно",
     "wordsRemaining": "Осталось {{remaining}} слов",
     "rollingLimit": "Скользящий недельный лимит",
-    "upgradeToPro": "Перейти на Pro",
-    "useYourOwnKey": "Свой API-ключ",
-    "upgradeUnlimited": "Pro — без ограничений"
+    "useYourOwnKey": "Свой API-ключ"
   },
   "support": {
     "joinDiscord": "Присоединиться к Discord",

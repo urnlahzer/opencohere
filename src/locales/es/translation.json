@@ -88,21 +88,6 @@
     "quit": "Salir",
     "cancel": "Cancelar"
   },
-  "upgradePrompt": {
-    "paymentFailed": "No pudimos procesar tu pago",
-    "weeklyLimit": "Has alcanzado tu límite semanal",
-    "pastDueDescription": "Estás en el plan gratuito por ahora, pero no te preocupes: aún tienes {{limit}} palabras por semana.\nActualiza tu método de pago para volver a Pro ilimitado.",
-    "limitDescription": "{{used}} de {{limit}} palabras usadas.\nTu transcripción fue guardada y pegada.",
-    "updatePayment": "Actualizar método de pago",
-    "updatePaymentDescription": "Vuelve a las transcripciones Pro ilimitadas.",
-    "upgradeToPro": "Mejorar a Pro",
-    "upgradeDescription": "Transcripciones ilimitadas desde solo $8/mes.",
-    "useApiKey": "Usa tu propia clave API",
-    "useApiKeyDescription": "Trae tu propia clave para uso ilimitado.",
-    "switchToLocal": "Cambiar a local",
-    "switchToLocalDescription": "Transcripción sin conexión. Sin límites.",
-    "rollingWeeklyLimit": "Límite semanal móvil"
-  },
   "windowControls": {
     "minimize": "Minimizar",
     "maximize": "Maximizar",
@@ -204,19 +189,9 @@
       "installButton": "Instalar actualización",
       "availableButton": "Actualización disponible"
     },
-    "limit": {
-      "weeklyTitle": "Límite semanal alcanzado",
-      "weeklyDescription": "Tu límite se restablece de forma continua. Mejora a Pro o usa tu propia clave API para uso ilimitado."
-    },
     "accessibilityMissing": {
       "title": "Se necesitan permisos de accesibilidad",
       "description": "Hemos detectado que OpenCohere necesita permisos de accesibilidad para funcionar correctamente. Actívalos a continuación."
-    },
-    "billing": {
-      "pastDueTitle": "No pudimos procesar tu pago",
-      "pastDueDescription": "No te preocupes: estás en el plan gratuito por ahora. Actualiza tu pago en Ajustes para volver a Pro.",
-      "bannerDescription": "Estás en el plan gratuito por ahora: aún tienes {{limit}} palabras por semana. Actualiza tu pago para volver a Pro.",
-      "updatePayment": "Actualizar pago"
     },
     "history": {
       "couldNotLoadTitle": "No se pudo cargar tu historial",
@@ -821,38 +796,23 @@
     "account": {
       "badges": {
         "free": "Gratis",
-        "limitReached": "Límite alcanzado",
-        "pastDue": "Pago vencido",
         "pro": "Pro",
         "business": "Business",
         "trial": "Prueba"
       },
-      "billing": {
-        "couldNotOpenDescription": "Tuvimos problemas al abrir la página de facturación. Inténtalo de nuevo.",
-        "couldNotOpenTitle": "No se pudo abrir facturación",
-        "manageBilling": "Administrar facturación",
-        "opening": "Abriendo...",
-        "updatePaymentMethod": "Actualizar método de pago"
-      },
       "checkout": {
         "couldNotOpenDescription": "Tuvimos problemas al abrir la página de pago. Inténtalo de nuevo.",
         "couldNotOpenTitle": "No se pudo abrir el pago",
-        "opening": "Abriendo...",
-        "upgradeToPro": "Mejorar a Pro"
+        "opening": "Abriendo..."
       },
       "disabled": "Desactivado",
       "notConfigured": "La autenticación no está configurada",
       "notSignedIn": "Sin sesión iniciada",
       "notSignedInDescription": "Crea una cuenta para desbloquear funciones premium.",
       "offline": "Sin conexión",
-      "pastDue": {
-        "description": "Estás en el plan gratuito por ahora. Actualiza tu método de pago para volver a Pro.",
-        "title": "No pudimos procesar tu pago"
-      },
       "planDescriptions": {
         "freeUsage": "{{used}} / {{limit}} palabras esta semana",
         "nextBilling": "Próxima facturación: {{date}}",
-        "pastDue": "{{used}} / {{limit}} palabras gratis esta semana: actualiza el pago para restaurar Pro",
         "trial": "{{days}} días restantes: transcripciones ilimitadas",
         "unlimited": "Ilimitado"
       },
@@ -963,12 +923,7 @@
         "button": "Crear cuenta gratuita"
       },
       "title": "Cuenta",
-      "toasts": {
-        "approachingLimit": {
-          "description": "Has usado {{used}} de {{limit}} palabras gratis esta semana. Mejora a Pro para uso ilimitado.",
-          "title": "Cerca del límite semanal"
-        }
-      },
+      "toasts": {},
       "trialCta": {
         "button": "Crear cuenta gratuita",
         "description": "Transcripciones ilimitadas, procesamiento prioritario y más.",
@@ -1592,19 +1547,11 @@
     "referral": "Obtener un mes gratis",
     "settings": "Configuración",
     "support": "Soporte",
-    "limitReached": "Límite semanal alcanzado",
-    "limitReachedDescription": "Mejora a Pro para transcripciones ilimitadas.",
-    "upgradeToPro": "Mejorar a Pro",
-    "upgradeTitle": "Mejorar a Pro",
-    "upgradeDescription": "Transcripciones ilimitadas y más.",
-    "learnMore": "Más información",
     "integrations": "Integraciones",
     "defaultUser": "Usuario",
     "notSignedIn": "Sin sesión iniciada"
   },
   "usage": {
-    "approachingLimit": "Cerca del límite semanal",
-    "approachingLimitDescription": "Has usado {{wordsUsed}} de {{limit}} palabras gratuitas esta semana.",
     "yourPlan": "Tu plan",
     "trial": "Prueba (queda {{days}} día)",
     "trial_other": "Prueba (quedan {{days}} días)",
@@ -1614,13 +1561,10 @@
     "unlimited": "Transcripciones ilimitadas",
     "manageSubscription": "Gestionar suscripción",
     "weeklyUsage": "Uso semanal",
-    "limitReached": "Límite alcanzado",
     "free": "Gratis",
     "wordsRemaining": "{{remaining}} palabras restantes",
     "rollingLimit": "Límite semanal renovable",
-    "upgradeToPro": "Actualizar a Pro",
-    "useYourOwnKey": "Usar tu propia clave API",
-    "upgradeUnlimited": "Actualizar a Pro — transcripciones ilimitadas"
+    "useYourOwnKey": "Usar tu propia clave API"
   },
   "support": {
     "joinDiscord": "Unirse a Discord",
