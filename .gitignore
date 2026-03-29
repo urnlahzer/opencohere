@@ -267,6 +267,7 @@ $RECYCLE.BIN/
 
 # Claude Code
 .claude/
+docs/superpowers/
 .agent/
 .agents/
 
