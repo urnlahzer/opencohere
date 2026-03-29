@@ -10,10 +10,8 @@ import {
   Settings,
   Shield,
   Command,
-  UserCircle,
 } from "lucide-react";
 import TitleBar from "./TitleBar";
-import WindowControls from "./WindowControls";
 import PermissionsSection from "./ui/PermissionsSection";
 import SupportDropdown from "./ui/SupportDropdown";
 import StepProgress from "./ui/StepProgress";
@@ -25,11 +23,8 @@ import { useClipboard } from "../hooks/useClipboard";
 import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { useSettings } from "../hooks/useSettings";
 import LanguageSelector from "./ui/LanguageSelector";
-import AuthenticationStep from "./AuthenticationStep";
-import EmailVerificationStep from "./EmailVerificationStep";
 import { setAgentName as saveAgentName } from "../utils/agentName";
 import { formatHotkeyLabel, getDefaultHotkey, isGlobeLikeHotkey } from "../utils/hotkeys";
-import { useAuth } from "../hooks/useAuth";
 import { HotkeyInput } from "./ui/HotkeyInput";
 import { useHotkeyRegistration } from "../hooks/useHotkeyRegistration";
 import { getValidationMessage } from "../utils/hotkeyValidator";
@@ -45,9 +40,8 @@ interface OnboardingFlowProps {
 
 export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const { t } = useTranslation();
-  const { isSignedIn } = useAuth();
 
-  const getMaxStep = () => (isSignedIn ? 2 : 3);
+  const getMaxStep = () => 2;
 
   const [currentStep, setCurrentStep, removeCurrentStep] = useLocalStorage(
     "onboardingCurrentStep",
@@ -92,8 +86,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const [hotkey, setHotkey] = useState(dictationKey || getDefaultHotkey());
   const [agentName, setAgentName] = useState("OpenWhispr");
-  const [skipAuth, setSkipAuth] = useState(false);
-  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
   const [isModelDownloaded, setIsModelDownloaded] = useState(false);
   const [isUsingNativeShortcut, setIsUsingNativeShortcut] = useState(false);
   const readableHotkey = formatHotkeyLabel(hotkey);
@@ -122,23 +114,13 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const systemAudio = useSystemAudioPermission();
 
-  // For signed-in users, merge setup and permissions into one step
-  const steps =
-    isSignedIn && !skipAuth
-      ? [
-          { title: t("onboarding.steps.welcome"), icon: UserCircle },
-          { title: t("onboarding.steps.setup"), icon: Settings },
-          { title: t("onboarding.steps.activation"), icon: Command },
-        ]
-      : [
-          { title: t("onboarding.steps.welcome"), icon: UserCircle },
-          { title: t("onboarding.steps.setup"), icon: Settings },
-          { title: t("onboarding.steps.permissions"), icon: Shield },
-          { title: t("onboarding.steps.activation"), icon: Command },
-        ];
+  const steps = [
+    { title: t("onboarding.steps.setup"), icon: Settings },
+    { title: t("onboarding.steps.permissions"), icon: Shield },
+    { title: t("onboarding.steps.activation"), icon: Command },
+  ];
 
-  // Only show progress for signed-up users after account creation step
-  const showProgress = currentStep > 0;
+  const showProgress = true;
 
   useEffect(() => {
     const checkHotkeyMode = async () => {
@@ -179,8 +161,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   }, [useLocalWhisper, whisperModel, parakeetModel, localTranscriptionProvider]);
 
   // Auto-register default hotkey when entering the activation step
-  // (step 3 for non-signed-in, step 2 for signed-in users)
-  const activationStepIndex = isSignedIn && !skipAuth ? 2 : 3;
+  const activationStepIndex = 2;
 
   useEffect(() => {
     if (currentStep !== activationStepIndex) {
@@ -257,14 +238,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     setDictationKey(hotkey);
     saveAgentName(agentName);
 
-    const skippedAuth = skipAuth;
-    localStorage.setItem("authenticationSkipped", skippedAuth.toString());
     localStorage.setItem("onboardingCompleted", "true");
-    localStorage.setItem("skipAuth", skippedAuth.toString());
 
-    // Non-signed-in users in cloud mode default to BYOK to avoid
-    // "OpenWhispr Cloud requires sign-in" errors.
-    if (!isSignedIn && !useLocalWhisper) {
+    if (!useLocalWhisper) {
       updateTranscriptionSettings({ cloudTranscriptionMode: "byok" });
     }
 
@@ -280,7 +256,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     agentName,
     setDictationKey,
     ensureHotkeyRegistered,
-    isSignedIn,
     useLocalWhisper,
     updateTranscriptionSettings,
   ]);
@@ -319,75 +294,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 0: // Authentication (with Welcome)
-        if (pendingVerificationEmail) {
-          return (
-            <EmailVerificationStep
-              email={pendingVerificationEmail}
-              onVerified={() => {
-                setPendingVerificationEmail(null);
-                nextStep();
-              }}
-            />
-          );
-        }
-        return (
-          <AuthenticationStep
-            onContinueWithoutAccount={() => {
-              setSkipAuth(true);
-              nextStep();
-            }}
-            onAuthComplete={() => {
-              nextStep();
-            }}
-            onNeedsVerification={(email) => {
-              setPendingVerificationEmail(email);
-            }}
-          />
-        );
-
-      case 1: // Setup - Choose Mode & Configure (merged with permissions for signed-in users)
-        if (isSignedIn && !skipAuth) {
-          return (
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-7 h-7 text-emerald-600" />
-                </div>
-                <h2 className="text-2xl font-semibold text-foreground mb-2">
-                  {t("onboarding.setup.title")}
-                </h2>
-                <p className="text-muted-foreground">{t("onboarding.setup.description")}</p>
-              </div>
-
-              {/* Language Selector */}
-              <div className="space-y-2.5 p-3 bg-muted/50 border border-border/60 rounded">
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-muted-foreground">
-                    {t("onboarding.setup.language")}
-                  </label>
-                  <LanguageSelector
-                    value={preferredLanguage}
-                    onChange={(value) => {
-                      updateTranscriptionSettings({ preferredLanguage: value });
-                    }}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-
-              {/* Permissions */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium text-foreground">
-                  {t("onboarding.permissions.title")}
-                </h3>
-                <PermissionsSection permissions={permissionsHook} systemAudio={systemAudio} />
-              </div>
-            </div>
-          );
-        }
-
-        // Not signed in — full setup (unchanged)
+      case 0: // Setup - Choose Mode & Configure
         return (
           <div className="space-y-3">
             <div className="text-center space-y-0.5">
@@ -429,7 +336,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               onModeChange={(isLocal) => {
                 updateTranscriptionSettings({
                   useLocalWhisper: isLocal,
-                  ...(!isLocal && !isSignedIn ? { cloudTranscriptionMode: "byok" } : {}),
+                  ...(!isLocal ? { cloudTranscriptionMode: "byok" } : {}),
                 });
               }}
               openaiApiKey={openaiApiKey}
@@ -463,13 +370,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           </div>
         );
 
-      case 2: // Permissions (only for non-signed-in users) or Activation (for signed-in users)
-        // For signed-in users, this is the activation step
-        if (isSignedIn && !skipAuth) {
-          return renderActivationStep();
-        }
-
-        // For non-signed-in users, this is the permissions step
+      case 1: { // Permissions
         const platform = permissionsHook.pasteToolsInfo?.platform;
         const isMacOS = platform === "darwin";
 
@@ -490,8 +391,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             <PermissionsSection permissions={permissionsHook} systemAudio={systemAudio} />
           </div>
         );
+      }
 
-      case 3: // Activation (only for non-signed-in users)
+      case 2: // Activation
         return renderActivationStep();
 
       default:
@@ -577,15 +479,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0:
-        return isSignedIn || skipAuth; // Authentication step
-      case 1:
-        // For signed-in users: Setup step includes permissions
-        if (isSignedIn && !skipAuth) {
-          return areRequiredPermissionsMet(permissionsHook.micPermissionGranted);
-        }
-
-        // For non-signed-in users: Setup - check if configuration is complete
+      case 0: // Setup - check if configuration is complete
         if (useLocalWhisper) {
           const modelToCheck =
             localTranscriptionProvider === "nvidia" ? parakeetModel : whisperModel;
@@ -604,17 +498,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           }
           return openaiApiKey.trim().length > 0; // Default to OpenAI
         }
-      case 2: {
-        // For signed-in users, this is activation step
-        if (isSignedIn && !skipAuth) {
-          return hotkey.trim() !== "";
-        }
-
-        // For non-signed-in users, this is permissions step
+      case 1: // Permissions
         return areRequiredPermissionsMet(permissionsHook.micPermissionGranted);
-      }
-      case 3:
-        return hotkey.trim() !== ""; // Activation step for non-signed-in users
+      case 2: // Activation
+        return hotkey.trim() !== "";
       default:
         return false;
     }
@@ -631,11 +518,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       document.head.removeChild(link);
     };
   }, []);
-
-  const onboardingPlatform =
-    typeof window !== "undefined" && window.electronAPI?.getPlatform
-      ? window.electronAPI.getPlatform()
-      : "darwin";
 
   return (
     <div
@@ -660,69 +542,48 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         onOk={() => {}}
       />
 
-      {/* Title Bar / drag region */}
-      {currentStep === 0 ? (
-        <div
-          className="flex items-center justify-end w-full h-10 shrink-0"
-          style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
-        >
-          {onboardingPlatform !== "darwin" && (
-            <div className="pr-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-              <WindowControls />
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="shrink-0 z-10">
-          <TitleBar
-            showTitle={true}
-            className="bg-background backdrop-blur-xl border-b border-border shadow-sm"
-            actions={isSignedIn ? <SupportDropdown /> : undefined}
-          ></TitleBar>
-        </div>
-      )}
+      {/* Title Bar */}
+      <div className="shrink-0 z-10">
+        <TitleBar
+          showTitle={true}
+          className="bg-background backdrop-blur-xl border-b border-border shadow-sm"
+          actions={<SupportDropdown />}
+        ></TitleBar>
+      </div>
 
-      {/* Progress Bar - hidden on welcome/auth step */}
+      {/* Progress Bar */}
       {showProgress && (
         <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-b border-white/5 px-6 md:px-12 py-3 z-10">
           <div className="max-w-3xl mx-auto">
-            <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
+            <StepProgress steps={steps} currentStep={currentStep} />
           </div>
         </div>
       )}
 
       {/* Content - This will grow to fill available space */}
-      <div
-        className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
-      >
-        <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
+      <div className="flex-1 px-6 md:px-12 overflow-y-auto py-6">
+        <div className="w-full max-w-3xl mx-auto">
           <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-xl overflow-hidden">
-            <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
+            <CardContent className="p-6 md:p-8">
               {renderStep()}
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Footer Navigation - hidden on welcome/auth step */}
+      {/* Footer Navigation */}
       {showProgress && (
         <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-t border-white/5 px-6 md:px-12 py-3 z-10">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
-            {/* Hide back button on first step for signed-in users */}
-            {!(currentStep === 1 && isSignedIn && !skipAuth) && (
-              <Button
-                onClick={prevStep}
-                variant="outline"
-                disabled={currentStep === 0}
-                className="h-8 px-5 rounded-full text-xs"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                {t("common.back")}
-              </Button>
-            )}
-
-            {/* Spacer to push next button to the right when back button is hidden */}
-            {currentStep === 1 && isSignedIn && !skipAuth && <div />}
+            <Button
+              onClick={prevStep}
+              variant="outline"
+              disabled={currentStep === 0}
+              className="h-8 px-5 rounded-full text-xs"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              {t("common.back")}
+            </Button>
 
             <div className="flex items-center gap-2">
               {currentStep === steps.length - 1 ? (
