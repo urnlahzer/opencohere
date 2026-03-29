@@ -4,10 +4,8 @@ import {
   Sliders,
   Mic,
   Brain,
-  UserCircle,
   Wrench,
   Keyboard,
-  CreditCard,
   Shield,
   MessageSquare,
 } from "lucide-react";
@@ -18,6 +16,8 @@ export type { SettingsSectionType };
 
 // Maps old section IDs to new ones for backward-compatible deep-linking
 const SECTION_ALIASES: Record<string, SettingsSectionType> = {
+  account: "general",
+  plansBilling: "general",
   aiModels: "intelligence",
   agentConfig: "intelligence",
   prompts: "intelligence",
@@ -37,20 +37,6 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
   const { t } = useTranslation();
   const sidebarItems: SidebarItem<SettingsSectionType>[] = useMemo(
     () => [
-      {
-        id: "account",
-        label: t("settingsModal.sections.account.label"),
-        icon: UserCircle,
-        description: t("settingsModal.sections.account.description"),
-        group: t("settingsModal.groups.account"),
-      },
-      {
-        id: "plansBilling",
-        label: t("settingsModal.sections.plansBilling.label"),
-        icon: CreditCard,
-        description: t("settingsModal.sections.plansBilling.description"),
-        group: t("settingsModal.groups.account"),
-      },
       {
         id: "general",
         label: t("settingsModal.sections.general.label"),
@@ -104,7 +90,7 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
     [t]
   );
 
-  const [activeSection, setActiveSection] = React.useState<SettingsSectionType>("account");
+  const [activeSection, setActiveSection] = React.useState<SettingsSectionType>("general");
 
   // Navigate to initial section when modal opens, resolving legacy aliases
   useEffect(() => {
