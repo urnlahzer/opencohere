@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../config/constants";
 import i18n, { normalizeUiLanguage } from "../i18n";
-import { hasStoredByokKey } from "../utils/byokDetection";
 import { ensureAgentNameInDictionary } from "../utils/agentName";
 import logger from "../utils/logger";
 import type { LocalTranscriptionProvider } from "../types/electron";
@@ -53,7 +52,6 @@ const BOOLEAN_SETTINGS = new Set([
   "assemblyAiStreaming",
   "useReasoningModel",
   "preferBuiltInMic",
-  "cloudBackupEnabled",
   "telemetryEnabled",
   "audioCuesEnabled",
   "pauseMediaOnDictation",
@@ -61,7 +59,6 @@ const BOOLEAN_SETTINGS = new Set([
   "startMinimized",
   "meetingProcessDetection",
   "meetingAudioDetection",
-  "isSignedIn",
   "agentEnabled",
   "keepTranscriptionInClipboard",
   "dataRetentionEnabled",
@@ -93,7 +90,6 @@ export interface SettingsState
     PrivacySettings,
     ThemeSettings,
     AgentModeSettings {
-  isSignedIn: boolean;
   audioCuesEnabled: boolean;
   pauseMediaOnDictation: boolean;
   floatingIconAutoHide: boolean;
@@ -143,7 +139,6 @@ export interface SettingsState
   setSelectedMicDeviceId: (value: string) => void;
 
   setTheme: (value: "light" | "dark" | "auto") => void;
-  setCloudBackupEnabled: (value: boolean) => void;
   setTelemetryEnabled: (value: boolean) => void;
   setAudioRetentionDays: (days: number) => void;
   setDataRetentionEnabled: (value: boolean) => void;
@@ -156,14 +151,12 @@ export interface SettingsState
   setMeetingAudioDetection: (value: boolean) => void;
   setPanelStartPosition: (position: "bottom-right" | "center" | "bottom-left") => void;
   setKeepTranscriptionInClipboard: (value: boolean) => void;
-  setIsSignedIn: (value: boolean) => void;
 
   setAgentModel: (value: string) => void;
   setAgentProvider: (value: string) => void;
   setAgentKey: (key: string) => void;
   setAgentSystemPrompt: (value: string) => void;
   setAgentEnabled: (value: boolean) => void;
-  setCloudAgentMode: (value: string) => void;
 
   updateTranscriptionSettings: (settings: Partial<TranscriptionSettings>) => void;
   updateReasoningSettings: (settings: Partial<ReasoningSettings>) => void;
@@ -237,11 +230,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     "cloudTranscriptionBaseUrl",
     API_ENDPOINTS.TRANSCRIPTION_BASE
   ),
-  cloudTranscriptionMode: readString(
-    "cloudTranscriptionMode",
-    hasStoredByokKey() ? "byok" : "openwhispr"
-  ),
-  cloudReasoningMode: readString("cloudReasoningMode", "openwhispr"),
+  cloudTranscriptionMode: readString("cloudTranscriptionMode", "byok"),
+  cloudReasoningMode: readString("cloudReasoningMode", "byok"),
   cloudReasoningBaseUrl: readString("cloudReasoningBaseUrl", API_ENDPOINTS.OPENAI_BASE),
   customDictionary: readStringArray("customDictionary", []),
   assemblyAiStreaming: readBoolean("assemblyAiStreaming", true),
@@ -272,7 +262,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (v === "light" || v === "dark" || v === "auto") return v;
     return "auto" as const;
   })(),
-  cloudBackupEnabled: readBoolean("cloudBackupEnabled", false),
   telemetryEnabled: readBoolean("telemetryEnabled", false),
   audioRetentionDays: (() => {
     if (!isBrowser) return 30;
@@ -308,14 +297,12 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return "bottom-right" as const;
   })(),
   keepTranscriptionInClipboard: readBoolean("keepTranscriptionInClipboard", false),
-  isSignedIn: readBoolean("isSignedIn", false),
 
   agentModel: readString("agentModel", "openai/gpt-oss-120b"),
   agentProvider: readString("agentProvider", "groq"),
   agentKey: readString("agentKey", ""),
   agentSystemPrompt: readString("agentSystemPrompt", ""),
   agentEnabled: readBoolean("agentEnabled", true),
-  cloudAgentMode: readString("cloudAgentMode", "openwhispr"),
 
   setUseLocalWhisper: createBooleanSetter("useLocalWhisper"),
   setWhisperModel: createStringSetter("whisperModel"),
@@ -441,7 +428,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     set({ theme: value });
   },
 
-  setCloudBackupEnabled: createBooleanSetter("cloudBackupEnabled"),
   setTelemetryEnabled: createBooleanSetter("telemetryEnabled"),
   setAudioRetentionDays: (days: number) => {
     if (isBrowser) localStorage.setItem("audioRetentionDays", String(days));
@@ -500,11 +486,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
 
   setKeepTranscriptionInClipboard: createBooleanSetter("keepTranscriptionInClipboard"),
 
-  setIsSignedIn: (value: boolean) => {
-    if (isBrowser) localStorage.setItem("isSignedIn", String(value));
-    set({ isSignedIn: value });
-  },
-
   setAgentModel: createStringSetter("agentModel"),
   setAgentProvider: createStringSetter("agentProvider"),
   setAgentKey: (key: string) => {
@@ -549,7 +530,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   },
   setAgentSystemPrompt: createStringSetter("agentSystemPrompt"),
   setAgentEnabled: createBooleanSetter("agentEnabled"),
-  setCloudAgentMode: createStringSetter("cloudAgentMode"),
 
   updateTranscriptionSettings: (settings: Partial<TranscriptionSettings>) => {
     const s = useSettingsStore.getState();
@@ -614,24 +594,13 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (settings.agentSystemPrompt !== undefined)
       s.setAgentSystemPrompt(settings.agentSystemPrompt);
     if (settings.agentEnabled !== undefined) s.setAgentEnabled(settings.agentEnabled);
-    if (settings.cloudAgentMode !== undefined) s.setCloudAgentMode(settings.cloudAgentMode);
   },
 }));
 
 // --- Selectors (derived state, not stored) ---
 
-export const selectIsCloudReasoningMode = (state: SettingsState) =>
-  state.isSignedIn && state.cloudReasoningMode === "openwhispr";
-
 export const selectEffectiveReasoningProvider = (state: SettingsState) =>
-  selectIsCloudReasoningMode(state) ? "openwhispr" : state.reasoningProvider;
-
-export const selectIsCloudAgentMode = (state: SettingsState) =>
-  state.isSignedIn && state.cloudAgentMode === "openwhispr";
-
-export function isCloudAgentMode() {
-  return selectIsCloudAgentMode(useSettingsStore.getState());
-}
+  state.reasoningProvider;
 
 // --- Convenience getters for non-React code ---
 
@@ -640,15 +609,7 @@ export function getSettings() {
 }
 
 export function getEffectiveReasoningModel() {
-  const state = useSettingsStore.getState();
-  if (selectIsCloudReasoningMode(state)) {
-    return "";
-  }
-  return state.reasoningModel;
-}
-
-export function isCloudReasoningMode() {
-  return selectIsCloudReasoningMode(useSettingsStore.getState());
+  return useSettingsStore.getState().reasoningModel;
 }
 
 // --- Initialization ---
