@@ -7,7 +7,7 @@ const { execFile } = require("child_process");
 const { pipeline } = require("stream");
 const debugLogger = require("./debugLogger");
 
-const USER_AGENT = "OpenWhispr/1.0";
+const USER_AGENT = "OpenCohere/1.0";
 const PROGRESS_THROTTLE_MS = 100;
 const MAX_REDIRECTS = 5;
 const DEFAULT_TIMEOUT = 60000;

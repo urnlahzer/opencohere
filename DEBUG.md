@@ -7,28 +7,28 @@ Enable verbose logging to diagnose issues like "no audio detected" or transcript
 ### Option 1: Command Line
 ```bash
 # macOS
-/Applications/OpenWhispr.app/Contents/MacOS/OpenWhispr --log-level=debug
+/Applications/OpenCohere.app/Contents/MacOS/OpenCohere --log-level=debug
 
 # Windows
-OpenWhispr.exe --log-level=debug
+OpenCohere.exe --log-level=debug
 ```
 
 ### Option 2: Environment File
 Add to your `.env` file and restart:
 ```
-OPENWHISPR_LOG_LEVEL=debug
+OPENCOHERE_LOG_LEVEL=debug
 ```
 
 **Env file locations:**
-- macOS: `~/Library/Application Support/OpenWhispr/.env`
-- Windows: `%APPDATA%\OpenWhispr\.env`
-- Linux: `~/.config/OpenWhispr/.env`
+- macOS: `~/Library/Application Support/OpenCohere/.env`
+- Windows: `%APPDATA%\OpenCohere\.env`
+- Linux: `~/.config/OpenCohere/.env`
 
 ## Log File Locations
 
-- **macOS**: `~/Library/Application Support/OpenWhispr/logs/debug-*.log`
-- **Windows**: `%APPDATA%\OpenWhispr\logs\debug-*.log`
-- **Linux**: `~/.config/OpenWhispr/logs/debug-*.log`
+- **macOS**: `~/Library/Application Support/OpenCohere/logs/debug-*.log`
+- **Windows**: `%APPDATA%\OpenCohere\logs\debug-*.log`
+- **Linux**: `~/.config/OpenCohere/logs/debug-*.log`
 
 ## What Gets Logged
 
@@ -76,4 +76,4 @@ When reporting issues:
 
 Debug mode is off by default. To ensure it's disabled:
 - Remove `--log-level=debug` from command
-- Remove `OPENWHISPR_LOG_LEVEL` from `.env`
+- Remove `OPENCOHERE_LOG_LEVEL` from `.env`

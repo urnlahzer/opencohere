@@ -129,7 +129,7 @@ export default function PromptStudio({ className = "" }: PromptStudioProps) {
 
     try {
       const reasoningProvider = isCloudMode
-        ? "openwhispr"
+        ? "opencohere"
         : reasoningModel
           ? getModelProvider(reasoningModel)
           : "openai";
@@ -359,7 +359,7 @@ export default function PromptStudio({ className = "" }: PromptStudioProps) {
         {activeTab === "test" &&
           (() => {
             const reasoningProvider = isCloudMode
-              ? "openwhispr"
+              ? "opencohere"
               : reasoningModel
                 ? getModelProvider(reasoningModel)
                 : "openai";
@@ -368,7 +368,7 @@ export default function PromptStudio({ className = "" }: PromptStudioProps) {
             };
 
             const displayModel = isCloudMode
-              ? t("promptStudio.test.openwhisprCloud")
+              ? t("promptStudio.test.opencohereCloud")
               : reasoningModel || t("promptStudio.test.none");
             const displayProvider =
               reasoningProvider === "custom"

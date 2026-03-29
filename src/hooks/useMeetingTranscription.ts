@@ -33,7 +33,7 @@ const getMeetingTranscriptionOptions = () => {
   const model = REALTIME_MODELS.has(cloudTranscriptionModel)
     ? cloudTranscriptionModel
     : "gpt-4o-mini-transcribe";
-  const mode = cloudTranscriptionMode === "byok" && !!openaiApiKey ? "byok" : "openwhispr";
+  const mode = cloudTranscriptionMode === "byok" && !!openaiApiKey ? "byok" : "opencohere";
   return { provider: "openai-realtime" as const, model, mode };
 };
 

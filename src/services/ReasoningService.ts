@@ -399,7 +399,7 @@ class ReasoningService extends BaseReasoningService {
     let trimmedModel = model?.trim?.() || "";
     const provider = getModelProvider(trimmedModel);
 
-    if (!trimmedModel && provider !== "openwhispr") {
+    if (!trimmedModel && provider !== "opencohere") {
       throw new Error("No reasoning model selected");
     }
 
@@ -437,8 +437,8 @@ class ReasoningService extends BaseReasoningService {
         case "groq":
           result = await this.processWithGroq(text, model, agentName, config);
           break;
-        case "openwhispr":
-          result = await this.processWithOpenWhispr(text, model, agentName, config);
+        case "opencohere":
+          result = await this.processWithOpenCohere(text, model, agentName, config);
           break;
         case "custom":
           result = await this.processWithOpenAI(text, trimmedModel, agentName, config);
@@ -1032,7 +1032,7 @@ class ReasoningService extends BaseReasoningService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async processWithOpenWhispr(
+  private async processWithOpenCohere(
     _text?: string,
     _model?: string,
     _agentName?: string | null,

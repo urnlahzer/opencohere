@@ -1,19 +1,19 @@
 const { execFileSync } = require("child_process");
 const debugLogger = require("./debugLogger");
 
-const DBUS_SERVICE_NAME = "com.openwhispr.App";
-const DBUS_OBJECT_PATH = "/com/openwhispr/App";
-const DBUS_INTERFACE = "com.openwhispr.App";
+const DBUS_SERVICE_NAME = "com.opencohere.App";
+const DBUS_OBJECT_PATH = "/com/opencohere/App";
+const DBUS_INTERFACE = "com.opencohere.App";
 
 // Per-slot gsettings paths and display names
 const SLOT_CONFIG = {
   dictation: {
-    path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr/",
-    name: "OpenWhispr Toggle",
+    path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/opencohere/",
+    name: "OpenCohere Toggle",
   },
   agent: {
-    path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr-agent/",
-    name: "OpenWhispr Agent",
+    path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/opencohere-agent/",
+    name: "OpenCohere Agent",
   },
 };
 
@@ -124,7 +124,7 @@ class GnomeShortcutManager {
   }
 
   _createInterfaceClass(dbusModule) {
-    class OpenWhisprInterface extends dbusModule.interface.Interface {
+    class OpenCohereInterface extends dbusModule.interface.Interface {
       constructor(dictationCallback, agentCallback) {
         super(DBUS_INTERFACE);
         this._dictationCallback = dictationCallback;
@@ -144,14 +144,14 @@ class GnomeShortcutManager {
       }
     }
 
-    OpenWhisprInterface.configureMembers({
+    OpenCohereInterface.configureMembers({
       methods: {
         Toggle: { inSignature: "", outSignature: "" },
         ToggleAgent: { inSignature: "", outSignature: "" },
       },
     });
 
-    return OpenWhisprInterface;
+    return OpenCohereInterface;
   }
 
   static isValidShortcut(shortcut) {

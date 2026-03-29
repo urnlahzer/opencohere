@@ -1,10 +1,10 @@
-# OpenWhispr Technical Reference for AI Assistants
+# OpenCohere Technical Reference for AI Assistants
 
-This document provides comprehensive technical details about the OpenWhispr project architecture for AI assistants working on the codebase.
+This document provides comprehensive technical details about the OpenCohere project architecture for AI assistants working on the codebase.
 
 ## Project Overview
 
-OpenWhispr is an Electron-based desktop dictation application that uses whisper.cpp for speech-to-text transcription. It supports both local (privacy-focused) and cloud (OpenAI API) processing modes.
+OpenCohere is an Electron-based desktop dictation application that uses whisper.cpp for speech-to-text transcription. It supports both local (privacy-focused) and cloud (OpenAI API) processing modes.
 
 ## Architecture Overview
 
@@ -72,7 +72,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Converts Electron hotkey format to GNOME keysym format
   - Only active on Linux + Wayland + GNOME desktop
 - **hyprlandShortcut.js**: Hyprland Wayland global shortcut integration
-  - Uses D-Bus service to receive hotkey toggle commands (same `com.openwhispr.App` service)
+  - Uses D-Bus service to receive hotkey toggle commands (same `com.opencohere.App` service)
   - Registers shortcuts via `hyprctl keyword bind` (runtime keybinding)
   - Converts Electron hotkey format to Hyprland bind format (`MODS, key`)
   - Only active on Linux + Wayland + Hyprland (detected via `HYPRLAND_INSTANCE_SIGNATURE`)
@@ -144,7 +144,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Bundled binaries in `resources/bin/whisper-cpp-{platform}-{arch}`
   - Falls back to system installation (`brew install whisper-cpp`)
   - GGML model downloads from HuggingFace
-  - Models stored in `~/.cache/openwhispr/whisper-models/`
+  - Models stored in `~/.cache/opencohere/whisper-models/`
 
 ### NVIDIA Parakeet Integration (via sherpa-onnx)
 
@@ -152,7 +152,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Uses sherpa-onnx runtime for cross-platform ONNX inference
   - Bundled binaries in `resources/bin/sherpa-onnx-{platform}-{arch}`
   - INT8 quantized models for efficient CPU inference
-  - Models stored in `~/.cache/openwhispr/parakeet-models/`
+  - Models stored in `~/.cache/opencohere/parakeet-models/`
   - Server pre-warming on startup when `LOCAL_TRANSCRIPTION_PROVIDER=nvidia` is set
   - Provider preference persisted to `.env` via `saveAllKeysToEnvFile()` on server start/stop
 
@@ -202,7 +202,7 @@ FFmpeg is bundled with the app and doesn't require system installation:
 
 ### 3. Local Whisper Models (GGML format)
 
-Models stored in `~/.cache/openwhispr/whisper-models/`:
+Models stored in `~/.cache/opencohere/whisper-models/`:
 - tiny: ~75MB (fastest, lowest quality)
 - base: ~142MB (recommended balance)
 - small: ~466MB (better quality)
@@ -345,7 +345,7 @@ The app can open OS-level settings for microphone permissions, sound input selec
 
 ### 11. Debug Mode
 
-Enable with `--log-level=debug` or `OPENWHISPR_LOG_LEVEL=debug` (can be set in `.env`):
+Enable with `--log-level=debug` or `OPENCOHERE_LOG_LEVEL=debug` (can be set in `.env`):
 - Logs saved to platform-specific app data directory
 - Comprehensive logging of audio pipeline
 - FFmpeg path resolution details
@@ -399,19 +399,19 @@ Improve transcription accuracy for specific words, names, or technical terms:
 
 ### 14. GNOME Wayland Global Hotkeys
 
-On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's security model. OpenWhispr uses native GNOME shortcuts:
+On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's security model. OpenCohere uses native GNOME shortcuts:
 
 **Architecture**:
 1. `main.js` enables `GlobalShortcutsPortal` feature flag for Wayland
 2. `hotkeyManager.js` detects GNOME + Wayland and initializes `GnomeShortcutManager`
-3. `gnomeShortcut.js` creates D-Bus service at `com.openwhispr.App`
+3. `gnomeShortcut.js` creates D-Bus service at `com.opencohere.App`
 4. Shortcuts registered via `gsettings` as custom GNOME keybindings
 5. GNOME triggers `dbus-send` command which calls the D-Bus `Toggle()` method
 
 **Key Constants**:
-- D-Bus service: `com.openwhispr.App`
-- D-Bus path: `/com/openwhispr/App`
-- gsettings path: `/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr/`
+- D-Bus service: `com.opencohere.App`
+- D-Bus path: `/com/opencohere/App`
+- gsettings path: `/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/opencohere/`
 
 **IPC Integration**:
 - `get-hotkey-mode-info`: Returns `{ isUsingGnome, isUsingHyprland, isUsingNativeShortcut }` to renderer
@@ -425,12 +425,12 @@ On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's 
 
 ### 15. Hyprland Wayland Global Hotkeys
 
-On Hyprland (wlroots Wayland compositor), Electron's `globalShortcut` API and the `GlobalShortcutsPortal` feature don't work reliably. OpenWhispr uses native Hyprland keybindings:
+On Hyprland (wlroots Wayland compositor), Electron's `globalShortcut` API and the `GlobalShortcutsPortal` feature don't work reliably. OpenCohere uses native Hyprland keybindings:
 
 **Architecture**:
 1. `main.js` enables `GlobalShortcutsPortal` feature flag for Wayland (fallback)
 2. `hotkeyManager.js` detects Hyprland + Wayland and initializes `HyprlandShortcutManager`
-3. `hyprlandShortcut.js` creates D-Bus service at `com.openwhispr.App` (same as GNOME)
+3. `hyprlandShortcut.js` creates D-Bus service at `com.opencohere.App` (same as GNOME)
 4. Shortcuts registered via `hyprctl keyword bind` (runtime keybinding)
 5. Hyprland triggers `dbus-send` command which calls the D-Bus `Toggle()` method
 
@@ -511,7 +511,7 @@ const { t } = useTranslation();
 1. Every new UI string must have a translation key in `en/translation.json` and all other language files
 2. Use `useTranslation()` hook in components and hooks
 3. Keep `{{variable}}` interpolation syntax for dynamic values
-4. Do NOT translate: brand names (OpenWhispr, Pro), technical terms (Markdown, Signal ID), format names (MP3, WAV), AI system prompts
+4. Do NOT translate: brand names (OpenCohere, Pro), technical terms (Markdown, Signal ID), format names (MP3, WAV), AI system prompts
 5. Group keys by feature area (e.g., `notes.editor.*`, `referral.toasts.*`)
 
 ### Adding New Features

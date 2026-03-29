@@ -5,13 +5,13 @@
 
 ## Goal
 
-Remove all cloud/account features from the OpenWhispr fork and rebrand to OpenCohere. The app becomes a purely local-first tool with optional BYOK (Bring Your Own Key) cloud AI via user's own API keys.
+Remove all cloud/account features from the OpenCohere fork and rebrand to OpenCohere. The app becomes a purely local-first tool with optional BYOK (Bring Your Own Key) cloud AI via user's own API keys.
 
 ## Scope
 
 ### Features Being Removed
 
-1. **OpenWhispr Cloud Transcription** — cloud-managed STT with no user API keys
+1. **OpenCohere Cloud Transcription** — cloud-managed STT with no user API keys
 2. **Account System** — Google OAuth, email/password sign-in, email verification (Neon Auth)
 3. **Subscription Management** — Free tier (2,000 words/week), Pro tier, 7-day trial, Stripe billing
 4. **Referral Program** — referral codes, invite tracking, reward system
@@ -75,7 +75,7 @@ From `preload.js`: Remove all corresponding API methods exposed to renderer.
 ## Section 3: Files to Modify
 
 ### `main.js`
-- Remove OAuth protocol registration (`openwhispr://`)
+- Remove OAuth protocol registration (`opencohere://`)
 - Remove OAuth callback handling
 - Remove auth-related cookie management
 - Keep: window creation, app lifecycle, local features
@@ -91,7 +91,7 @@ From `preload.js`: Remove all corresponding API methods exposed to renderer.
 
 ### `src/stores/settingsStore.ts`
 - Remove `isSignedIn` flag
-- Remove cloud mode states: `cloudTranscriptionMode: "openwhispr"`, `cloudReasoningMode: "openwhispr"`, `cloudAgentMode: "openwhispr"`, `cloudBackupEnabled`
+- Remove cloud mode states: `cloudTranscriptionMode: "opencohere"`, `cloudReasoningMode: "opencohere"`, `cloudAgentMode: "opencohere"`, `cloudBackupEnabled`
 - Keep: BYOK and local settings, all API key fields, `cloudTranscriptionMode: "byok"` as default
 - Keep: `byokDetection.ts` and all BYOK auto-detection logic
 
@@ -106,11 +106,11 @@ From `preload.js`: Remove all corresponding API methods exposed to renderer.
 - Keep: local transcription, notes, BYOK methods
 
 ### `.env.example`
-- Remove: `VITE_NEON_AUTH_URL`, `VITE_OPENWHISPR_API_URL`, `VITE_OPENWHISPR_OAUTH_CALLBACK_URL`, `VITE_OPENWHISPR_PROTOCOL`
+- Remove: `VITE_NEON_AUTH_URL`, `VITE_OPENCOHERE_API_URL`, `VITE_OPENCOHERE_OAUTH_CALLBACK_URL`, `VITE_OPENCOHERE_PROTOCOL`
 - Keep: local config variables
 
 ### `src/components/AgentOverlay.tsx`
-- Remove `isSignedIn && cloudAgentMode === "openwhispr"` gating
+- Remove `isSignedIn && cloudAgentMode === "opencohere"` gating
 
 ### `src/components/UploadAudioView.tsx`
 - Simplify `!isSignedIn` conditionals — BYOK/local model picker should always show (no cloud mode exists)
@@ -135,11 +135,11 @@ Removing cloud handlers, auth, and `isSignedIn` does NOT break BYOK. Conditional
 
 ## Section 4: Rebrand
 
-Replace "OpenWhispr" → "OpenCohere" in:
+Replace "OpenCohere" → "OpenCohere" in:
 - `package.json` — name, productName, description
 - `electron-builder.json` — appId, productName, artifact names
 - `main.js` — window titles
-- UI strings — any user-facing "OpenWhispr" text
+- UI strings — any user-facing "OpenCohere" text
 - `README.md` — title, descriptions, branding
 - `.github/` — issue templates, CI config references
 - Resources — flag icons/assets needing new branding (no asset generation in this phase)
@@ -151,7 +151,7 @@ Logical commit groups for traceability:
 2. Strip cloud IPC handlers and preload methods
 3. Modify shared files (OnboardingFlow, ControlPanel, SettingsPage, settingsStore, AgentOverlay)
 4. Remove cloud dependencies and env vars
-5. Rebrand OpenWhispr → OpenCohere
+5. Rebrand OpenCohere → OpenCohere
 6. Clean up: remove dead imports, unused types, lint
 
 ## Future Phases (Out of Scope)

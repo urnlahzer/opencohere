@@ -1,22 +1,22 @@
 <p align="center">
-  <img src="src/assets/logo.svg" alt="OpenWhispr" width="120" />
+  <img src="src/assets/logo.svg" alt="OpenCohere" width="120" />
 </p>
 
-<h1 align="center">OpenWhispr</h1>
+<h1 align="center">OpenCohere</h1>
 
 <p align="center">
-  <a href="https://github.com/OpenWhispr/openwhispr/blob/main/LICENSE"><img src="https://img.shields.io/github/license/OpenWhispr/openwhispr?style=flat" alt="License" /></a>
+  <a href="https://github.com/opencohere/opencohere/blob/main/LICENSE"><img src="https://img.shields.io/github/license/opencohere/opencohere?style=flat" alt="License" /></a>
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=flat" alt="Platform" />
-  <a href="https://github.com/OpenWhispr/openwhispr/releases/latest"><img src="https://img.shields.io/github/v/release/OpenWhispr/openwhispr?style=flat&sort=semver" alt="GitHub release" /></a>
-  <a href="https://github.com/OpenWhispr/openwhispr/releases"><img src="https://img.shields.io/github/downloads/OpenWhispr/openwhispr/total?style=flat&color=blue" alt="Downloads" /></a>
-  <a href="https://github.com/OpenWhispr/openwhispr/stargazers"><img src="https://img.shields.io/github/stars/OpenWhispr/openwhispr?style=flat" alt="GitHub stars" /></a>
+  <a href="https://github.com/opencohere/opencohere/releases/latest"><img src="https://img.shields.io/github/v/release/opencohere/opencohere?style=flat&sort=semver" alt="GitHub release" /></a>
+  <a href="https://github.com/opencohere/opencohere/releases"><img src="https://img.shields.io/github/downloads/opencohere/opencohere/total?style=flat&color=blue" alt="Downloads" /></a>
+  <a href="https://github.com/opencohere/opencohere/stargazers"><img src="https://img.shields.io/github/stars/opencohere/opencohere?style=flat" alt="GitHub stars" /></a>
 </p>
 
 <p align="center">Voice-to-text dictation and productivity app with AI agents, meeting transcription, notes, and local/cloud speech recognition.<br/>Privacy-first and available cross-platform.</p>
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=OpenWhispr/openwhispr&type=date&legend=top-left)](https://www.star-history.com/#OpenWhispr/openwhispr&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=opencohere/opencohere&type=date&legend=top-left)](https://www.star-history.com/#opencohere/opencohere&type=date&legend=top-left)
 
 ## License
 
@@ -59,15 +59,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 📝 **Notes System**: Create, edit, and organize notes with folders, audio upload, and real-time dictation
 - 🔎 **Full-Text Search**: FTS5-powered search across all note content with Cmd+K command palette
-- ☁️ **Cloud Sync**: Local-first storage with cloud backup and semantic search
 - 📁 **Folder Organization**: Organize notes into custom folders with drag-and-drop
-
-### Cloud & Account
-
-- ☁️ **OpenWhispr Cloud**: Sign in and transcribe instantly — no API keys needed, with free and Pro plans
-- 🔐 **Account System**: Google OAuth and email/password sign-in with email verification
-- 💳 **Subscription Management**: Free tier (2,000 words/week), Pro tier (unlimited), 7-day free trial
-- 🔗 **Referral Program**: Invite friends and earn free Pro months with shareable referral cards
 
 ### Platform & UI
 
@@ -96,8 +88,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/OpenWhispr/openwhispr.git
-   cd openwhispr
+   git clone https://github.com/opencohere/opencohere.git
+   cd opencohere
    ```
 
 2. **Install dependencies**:
@@ -152,9 +144,9 @@ If you want to build a standalone app for personal use:
 # Build without code signing (no certificates required)
 npm run pack
 
-# The unsigned app will be in: dist/mac-arm64/OpenWhispr.app (macOS)
-# or dist/win-unpacked/OpenWhispr.exe (Windows)
-# or dist/linux-unpacked/open-whispr (Linux)
+# The unsigned app will be in: dist/mac-arm64/OpenCohere.app (macOS)
+# or dist/win-unpacked/OpenCohere.exe (Windows)
+# or dist/linux-unpacked/open-cohere (Linux)
 ```
 
 **Note**: On macOS, you may see a security warning when first opening the unsigned app. Right-click and select "Open" to bypass this.
@@ -163,7 +155,7 @@ npm run pack
 
 **Native Paste Binary (`windows-fast-paste`)**:
 
-OpenWhispr ships a native C binary for pasting text on Windows, using the Win32 `SendInput` API. This is the **primary** paste mechanism — `nircmd` and PowerShell are only used as fallbacks if the native binary fails.
+OpenCohere ships a native C binary for pasting text on Windows, using the Win32 `SendInput` API. This is the **primary** paste mechanism — `nircmd` and PowerShell are only used as fallbacks if the native binary fails.
 
 How it works:
 
@@ -188,7 +180,7 @@ The build script (`scripts/build-windows-fast-paste.js`) first attempts to downl
 
 #### Linux (Multiple Package Formats)
 
-OpenWhispr now supports multiple Linux package formats for maximum compatibility:
+OpenCohere now supports multiple Linux package formats for maximum compatibility:
 
 **Available Formats**:
 
@@ -205,10 +197,10 @@ OpenWhispr now supports multiple Linux package formats for maximum compatibility
 npm run build:linux
 
 # Find packages in dist/:
-# - OpenWhispr-x.x.x-linux-x64.AppImage
-# - OpenWhispr-x.x.x-linux-x64.deb
-# - OpenWhispr-x.x.x-linux-x64.rpm
-# - OpenWhispr-x.x.x-linux-x64.tar.gz
+# - OpenCohere-x.x.x-linux-x64.AppImage
+# - OpenCohere-x.x.x-linux-x64.deb
+# - OpenCohere-x.x.x-linux-x64.rpm
+# - OpenCohere-x.x.x-linux-x64.tar.gz
 ```
 
 **Optional: Building Flatpak** (requires additional setup):
@@ -231,27 +223,27 @@ npm run build:linux
 
 ```bash
 # Debian/Ubuntu
-sudo apt install ./dist/OpenWhispr-*-linux-x64.deb
+sudo apt install ./dist/OpenCohere-*-linux-x64.deb
 
 # Fedora/RHEL
-sudo dnf install ./dist/OpenWhispr-*-linux-x64.rpm
+sudo dnf install ./dist/OpenCohere-*-linux-x64.rpm
 
 # Universal tar.gz (no root required)
-tar -xzf dist/OpenWhispr-*-linux-x64.tar.gz
-cd OpenWhispr-*/
-./openwhispr
+tar -xzf dist/OpenCohere-*-linux-x64.tar.gz
+cd OpenCohere-*/
+./opencohere
 
 # Flatpak
-flatpak install --user ./dist/OpenWhispr-*-linux-x64.flatpak
+flatpak install --user ./dist/OpenCohere-*-linux-x64.flatpak
 
 # AppImage (existing method)
-chmod +x dist/OpenWhispr-*.AppImage
-./dist/OpenWhispr-*.AppImage
+chmod +x dist/OpenCohere-*.AppImage
+./dist/OpenCohere-*.AppImage
 ```
 
 **Native Paste Binary (`linux-fast-paste`)**:
 
-OpenWhispr ships a native C binary for pasting text on Linux, compiled automatically at build time. This is the **primary** paste mechanism — external tools like `xdotool` and `wtype` are only used as fallbacks if the native binary fails.
+OpenCohere ships a native C binary for pasting text on Linux, compiled automatically at build time. This is the **primary** paste mechanism — external tools like `xdotool` and `wtype` are only used as fallbacks if the native binary fails.
 
 How it works:
 
@@ -280,7 +272,7 @@ The build script (`scripts/build-linux-fast-paste.js`) runs during `npm run comp
 3. Caches the binary and skips rebuilds unless the source or flags change
 4. Gracefully falls back to system tools if compilation fails
 
-If the native binary isn't available, OpenWhispr falls back to external paste tools in this order:
+If the native binary isn't available, OpenCohere falls back to external paste tools in this order:
 
 **Fallback Dependencies for Automatic Paste**:
 
@@ -350,13 +342,13 @@ sudo dnf install kdotool  # Fedora/RHEL
 sudo pacman -S kdotool    # Arch
 ```
 
-> ℹ️ **Note**: OpenWhispr automatically tries paste methods in this order: native `linux-fast-paste` binary (XTest or uinput) → `wtype` → `ydotool` → `xdotool` (for XWayland apps). If no paste method works, text will still be copied to the clipboard - you'll just need to paste manually with Ctrl+V.
+> ℹ️ **Note**: OpenCohere automatically tries paste methods in this order: native `linux-fast-paste` binary (XTest or uinput) → `wtype` → `ydotool` → `xdotool` (for XWayland apps). If no paste method works, text will still be copied to the clipboard - you'll just need to paste manually with Ctrl+V.
 
 > ⚠️ **ydotool Requirements**: The `ydotoold` daemon must be running for ydotool to work. Start it manually with `sudo ydotoold &` or enable the systemd service as shown above.
 
 **GNOME Wayland Global Hotkeys**:
 
-On GNOME Wayland, Electron's standard global shortcuts don't work due to Wayland's security model. OpenWhispr automatically uses native GNOME keyboard shortcuts via D-Bus and gsettings:
+On GNOME Wayland, Electron's standard global shortcuts don't work due to Wayland's security model. OpenCohere automatically uses native GNOME keyboard shortcuts via D-Bus and gsettings:
 
 - Hotkeys are registered as GNOME custom shortcuts (visible in Settings → Keyboard → Shortcuts)
 - Default hotkey is `Alt+R` (backtick not supported on GNOME Wayland)
@@ -382,8 +374,7 @@ npm run build:linux  # Linux
 ### First Time Setup
 
 1. **Choose Processing Method**:
-   - **OpenWhispr Cloud**: Sign in for instant cloud transcription with free and Pro plans
-   - **Bring Your Own Key**: Use your own OpenAI/Groq/AssemblyAI API keys
+   - **Bring Your Own Key (BYOK)**: Use your own OpenAI/Groq/AssemblyAI API keys
    - **Local Processing**: Download Whisper or Parakeet models for completely private transcription
 
 2. **Grant Permissions**:
@@ -422,11 +413,11 @@ npm run build:linux  # Linux
 
 ### Uninstall & Cache Cleanup
 
-- **In-App**: Use _Settings → General → Local Model Storage → Remove Downloaded Models_ to clear cached Whisper and Parakeet models from `~/.cache/openwhispr/` (or `%USERPROFILE%\.cache\openwhispr\` on Windows).
+- **In-App**: Use _Settings → General → Local Model Storage → Remove Downloaded Models_ to clear cached Whisper and Parakeet models from `~/.cache/opencohere/` (or `%USERPROFILE%\.cache\opencohere\` on Windows).
 - **Audio Files**: Retained audio files are stored in your app data directory and cleaned up automatically after 30 days. Clear manually via Settings if needed.
 - **Windows Uninstall**: The NSIS uninstaller automatically deletes the cache directory.
 - **Linux Packages**: `deb`/`rpm` post-uninstall scripts also remove cached models.
-- **macOS**: If you uninstall manually, remove `~/Library/Caches` or `~/.cache/openwhispr/` if desired.
+- **macOS**: If you uninstall manually, remove `~/Library/Caches` or `~/.cache/opencohere/` if desired.
 
 ### Agent Naming & AI Processing
 
@@ -467,7 +458,7 @@ Improve transcription accuracy for specific words, names, or technical terms:
 
 - Uncommon names (e.g., "Sergey", "Xanthe")
 - Technical jargon (e.g., "Kubernetes", "OAuth")
-- Brand names (e.g., "OpenWhispr", "whisper.cpp")
+- Brand names (e.g., "OpenCohere", "whisper.cpp")
 - Domain-specific terms (e.g., "amortization", "polymerase")
 
 ### Agent Mode
@@ -492,10 +483,6 @@ Automatically detect and transcribe meetings with Google Calendar integration:
 
 ### Processing Options
 
-- **OpenWhispr Cloud**:
-  - Sign in with Google or email — no API keys needed
-  - Free plan: 2,000 words/week with 7-day Pro trial for new accounts
-  - Pro plan: unlimited transcriptions
 - **Bring Your Own Key (BYOK)**:
   - Use your own API keys from OpenAI, Groq, Mistral, AssemblyAI, or custom endpoints
   - Full control over provider and model selection
@@ -507,7 +494,7 @@ Automatically detect and transcribe meetings with Google Calendar integration:
 ## Project Structure
 
 ```
-open-whispr/
+open-cohere/
 ├── main.js              # Electron main process & IPC handlers
 ├── preload.js           # Electron preload script & API bridge
 ├── setup.js             # First-time setup script
@@ -692,10 +679,10 @@ DEBUG=false
 
 ### Local Whisper Setup
 
-For local processing, OpenWhispr uses OpenAI's Whisper model via whisper.cpp - a high-performance C++ implementation:
+For local processing, OpenCohere uses OpenAI's Whisper model via whisper.cpp - a high-performance C++ implementation:
 
 1. **Bundled Binary**: whisper.cpp is bundled with the app for all platforms
-2. **GGML Models**: Downloads optimized GGML models on first use to `~/.cache/openwhispr/whisper-models/`
+2. **GGML Models**: Downloads optimized GGML models on first use to `~/.cache/opencohere/whisper-models/`
 3. **No Dependencies**: No Python or other runtime required
 
 **System Fallback**: If the bundled binary fails, install via package manager:
@@ -709,15 +696,15 @@ For local processing, OpenWhispr uses OpenAI's Whisper model via whisper.cpp - a
 
 - Sufficient disk space for models (75MB - 3GB depending on model)
 
-**Upgrading from Python-based version**: If you previously used the Python-based Whisper, you'll need to re-download models in GGML format. You can safely delete the old Python environment (`~/.openwhispr/python/`) and PyTorch models (`~/.cache/whisper/`) to reclaim disk space.
+**Upgrading from Python-based version**: If you previously used the Python-based Whisper, you'll need to re-download models in GGML format. You can safely delete the old Python environment (`~/.opencohere/python/`) and PyTorch models (`~/.cache/whisper/`) to reclaim disk space.
 
 ### Local Parakeet Setup (Alternative)
 
-OpenWhispr also supports NVIDIA Parakeet models via sherpa-onnx - a fast alternative to Whisper:
+OpenCohere also supports NVIDIA Parakeet models via sherpa-onnx - a fast alternative to Whisper:
 
 1. **Bundled Binary**: sherpa-onnx is bundled with the app for all platforms
 2. **INT8 Quantized Models**: Efficient CPU inference
-3. **Models stored in**: `~/.cache/openwhispr/parakeet-models/`
+3. **Models stored in**: `~/.cache/opencohere/parakeet-models/`
 
 **Available Models**:
 
@@ -757,7 +744,7 @@ We welcome contributions! Please follow these steps:
 
 ## Security
 
-OpenWhispr is designed with privacy and security in mind:
+OpenCohere is designed with privacy and security in mind:
 
 - **Local Processing Option**: Keep your voice data completely private
 - **No Analytics**: We don't collect any usage data or telemetry
@@ -774,7 +761,7 @@ OpenWhispr is designed with privacy and security in mind:
 1. **Microphone permissions**: Grant permissions in System Preferences/Settings
 2. **Accessibility permissions (macOS)**: Required for automatic text pasting
    - Go to System Settings → Privacy & Security → Accessibility
-   - Add OpenWhispr and enable the checkbox
+   - Add OpenCohere and enable the checkbox
    - Use "Fix Permission Issues" in Control Panel if needed
 3. **API key errors** (cloud processing only): Ensure your OpenAI API key is valid and has credits
    - Set key through Control Panel or .env file
@@ -802,7 +789,7 @@ OpenWhispr is designed with privacy and security in mind:
 
 ### Getting Help
 
-- Check the [Issues](https://github.com/OpenWhispr/openwhispr/issues) page
+- Check the [Issues](https://github.com/OpenCohere/opencohere/issues) page
 - Review the console logs for debugging information
 - For local processing: Ensure whisper.cpp is accessible and models are downloaded
 - For cloud processing: Verify your OpenAI API key and billing status
@@ -817,8 +804,8 @@ OpenWhispr is designed with privacy and security in mind:
 
 ## FAQ
 
-**Q: Is OpenWhispr really free?**
-A: Yes! OpenWhispr is open source and free to use. The free plan includes 2,000 words/week of cloud transcription, and local processing is completely free with no limits. Paid plans start from as little as $8/month.
+**Q: Is OpenCohere really free?**
+A: Yes! OpenCohere is open source and free to use. Local processing is completely free with no limits. BYOK mode uses your own API keys with no additional cost beyond what providers charge.
 
 **Q: Which processing method should I use?**
 A: Use local processing for privacy and offline use. Use cloud processing for speed and convenience.
@@ -833,32 +820,31 @@ A: Open the Control Panel (right-click tray icon) and go to Settings. You can se
 A: With local processing, your audio never leaves your device. With cloud processing, audio is sent to OpenAI's servers (see their privacy policy).
 
 **Q: What languages are supported?**
-A: OpenWhispr supports 58 languages including English, Spanish, French, German, Chinese, Japanese, and more. Set your preferred language in the .env file or use auto-detect.
+A: OpenCohere supports 58 languages including English, Spanish, French, German, Chinese, Japanese, and more. Set your preferred language in the .env file or use auto-detect.
 
 **Q: What is Agent Mode?**
 A: Agent Mode opens a chat overlay where you can have interactive AI conversations using voice. It supports streaming responses from all providers (OpenAI, Anthropic, Gemini, Groq, local) and saves conversation history.
 
 **Q: How does meeting transcription work?**
-A: Connect your Google Calendar in Integrations. When a meeting starts (Zoom, Teams, FaceTime), OpenWhispr detects it and offers to record. Audio is transcribed in real-time via OpenAI Realtime API. On macOS, screen recording permission is required to capture meeting audio.
+A: Connect your Google Calendar in Integrations. When a meeting starts (Zoom, Teams, FaceTime), OpenCohere detects it and offers to record. Audio is transcribed in real-time via OpenAI Realtime API. On macOS, screen recording permission is required to capture meeting audio.
 
 **Q: Where are my notes stored?**
-A: Notes are stored locally in SQLite with optional cloud sync. They support full-text search (FTS5), folder organization, and AI-powered enhancement actions.
+A: Notes are stored locally in SQLite. They support full-text search (FTS5), folder organization, and AI-powered enhancement actions.
 
-**Q: Does OpenWhispr require Input Monitoring on macOS?**
-A: No. As of v1.6.0, OpenWhispr uses NSEvent monitors instead of CGEvent taps, eliminating the Input Monitoring permission requirement. Only Microphone and Accessibility permissions are needed (plus Screen Recording for meeting features).
+**Q: Does OpenCohere require Input Monitoring on macOS?**
+A: No. As of v1.6.0, OpenCohere uses NSEvent monitors instead of CGEvent taps, eliminating the Input Monitoring permission requirement. Only Microphone and Accessibility permissions are needed (plus Screen Recording for meeting features).
 
 ## Project Status
 
-OpenWhispr is actively maintained and ready for production use. Current version: 1.6.6
+OpenCohere is actively maintained and ready for production use. Current version: 1.6.6
 
-- ✅ Core dictation with local and cloud processing
+- ✅ Core dictation with local and BYOK processing
 - ✅ Cross-platform support (macOS, Windows, Linux)
-- ✅ OpenWhispr Cloud with account system, usage tracking, and Stripe billing
 - ✅ Multi-provider AI (OpenAI, Anthropic, Gemini, Groq, Mistral, Local)
 - ✅ Agent Mode with streaming chat overlay and conversation history
 - ✅ Google Calendar integration with automatic meeting detection
 - ✅ Live meeting transcription via OpenAI Realtime API
-- ✅ Notes system with FTS5 search, cloud sync, folders, and AI actions
+- ✅ Notes system with FTS5 search, folders, and AI actions
 - ✅ Audio retention with playback and retry for failed transcriptions
 - ✅ Cmd+K command search across notes and transcripts
 - ✅ Auto-pause media playback during dictation
@@ -866,7 +852,6 @@ OpenWhispr is actively maintained and ready for production use. Current version:
 - ✅ NVIDIA Parakeet support via sherpa-onnx
 - ✅ Compound hotkeys and Windows Push-to-Talk
 - ✅ GNOME Wayland and Hyprland native global shortcuts
-- ✅ Referral program with shareable invite cards
 - ✅ Dedicated meeting mode hotkey
 - ✅ CodeQL static analysis and Dependabot dependency updates
 

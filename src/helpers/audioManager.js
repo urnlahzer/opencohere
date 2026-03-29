@@ -1134,7 +1134,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     return result;
   }
 
-  async processWithOpenWhisprCloud() {
+  async processWithOpenCohereCloud() {
     const err = new Error("Cloud transcription is not supported. Please use BYOK mode.");
     err.code = "CLOUD_REMOVED";
     throw err;
@@ -2120,7 +2120,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       } else if (error.code === "AUTH_EXPIRED" || error.code === "AUTH_REQUIRED") {
         errorTitle = "Sign-in Required";
         errorDescription =
-          "Your OpenWhispr Cloud session is unavailable. Please sign in again from Settings.";
+          "Your OpenCohere Cloud session is unavailable. Please sign in again from Settings.";
       }
 
       this.onError?.({

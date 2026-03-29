@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Strip all cloud/account features (auth, subscriptions, referrals, cloud transcription) from the OpenWhispr fork and rebrand to OpenCohere, keeping local and BYOK functionality intact.
+**Goal:** Strip all cloud/account features (auth, subscriptions, referrals, cloud transcription) from the OpenCohere fork and rebrand to OpenCohere, keeping local and BYOK functionality intact.
 
 **Architecture:** Surgical deletion of cloud-only files, IPC handlers, and preload methods, followed by simplification of shared files that had auth-conditional branches. BYOK paths are preserved untouched. Rebrand updates names/IDs throughout.
 
@@ -149,7 +149,7 @@ Delete these methods (lines ~375-401):
 // Delete this line:
 authClearSession: () => ipcRenderer.invoke("auth-clear-session"),
 
-// Delete this block (OpenWhispr Cloud API):
+// Delete this block (OpenCohere Cloud API):
 cloudTranscribe: (audioBuffer, opts) => ipcRenderer.invoke("cloud-transcribe", audioBuffer, opts),
 cloudReason: (text, opts) => ipcRenderer.invoke("cloud-reason", text, opts),
 cloudStreamingUsage: (text, audioDurationSeconds, opts) =>
@@ -172,7 +172,7 @@ getReferralInvites: () => ipcRenderer.invoke("get-referral-invites"),
 
 Keep `getSttConfig` and `transcribeAudioFileByok` — those are BYOK.
 
-Also delete the surrounding comment lines (`// OpenWhispr Cloud API`, `// Cloud audio file transcription`, `// Referral stats`).
+Also delete the surrounding comment lines (`// OpenCohere Cloud API`, `// Cloud audio file transcription`, `// Referral stats`).
 
 - [ ] **Step 2: Verify the file parses correctly**
 
@@ -416,7 +416,7 @@ Search for and remove:
 - Any `<ReferralModal` render
 - Any `usage?.isPastDue` conditional blocks
 - Any `isSignedIn` conditional rendering blocks
-- Cloud migration logic referencing `setCloudTranscriptionMode("openwhispr")`
+- Cloud migration logic referencing `setCloudTranscriptionMode("opencohere")`
 
 - [ ] **Step 4: Clean up any remaining references**
 
@@ -455,11 +455,11 @@ Search for `isSignedIn` in the store creation and remove:
 
 - [ ] **Step 3: Remove cloud-only mode values**
 
-The `cloudTranscriptionMode` field should keep `"byok"` as its default but remove `"openwhispr"` as a valid option. Find where `cloudTranscriptionMode` defaults to `"openwhispr"` and change the default to `"byok"`.
+The `cloudTranscriptionMode` field should keep `"byok"` as its default but remove `"opencohere"` as a valid option. Find where `cloudTranscriptionMode` defaults to `"opencohere"` and change the default to `"byok"`.
 
-Similarly for `cloudReasoningMode` — change default from `"openwhispr"` to `"byok"` or the first non-cloud option.
+Similarly for `cloudReasoningMode` — change default from `"opencohere"` to `"byok"` or the first non-cloud option.
 
-Remove `cloudAgentMode` state if it only supported `"openwhispr"`.
+Remove `cloudAgentMode` state if it only supported `"opencohere"`.
 
 Remove `cloudBackupEnabled` state.
 
@@ -468,18 +468,18 @@ Remove `cloudBackupEnabled` state.
 Delete selectors like:
 ```typescript
 selectIsCloudReasoningMode = (state) =>
-  state.isSignedIn && state.cloudReasoningMode === "openwhispr";
+  state.isSignedIn && state.cloudReasoningMode === "opencohere";
 selectIsCloudAgentMode = (state) =>
-  state.isSignedIn && state.cloudAgentMode === "openwhispr";
+  state.isSignedIn && state.cloudAgentMode === "opencohere";
 ```
 
 - [ ] **Step 5: Verify no `isSignedIn` references remain**
 
 ```bash
-grep -n "isSignedIn\|openwhispr\|cloudBackupEnabled" src/stores/settingsStore.ts
+grep -n "isSignedIn\|opencohere\|cloudBackupEnabled" src/stores/settingsStore.ts
 ```
 
-Expected: no matches for `isSignedIn`. `openwhispr` should only appear if there are unrelated string references. `cloudBackupEnabled` should be gone.
+Expected: no matches for `isSignedIn`. `opencohere` should only appear if there are unrelated string references. `cloudBackupEnabled` should be gone.
 
 - [ ] **Step 6: Commit**
 
@@ -524,7 +524,7 @@ Search for `isSignedIn` being passed as a prop (e.g., to transcription settings)
 
 - [ ] **Step 4: Simplify cloud reasoning mode section**
 
-Remove the OpenWhispr cloud reasoning option from any dropdowns/selectors. Keep BYOK and local reasoning options.
+Remove the OpenCohere cloud reasoning option from any dropdowns/selectors. Keep BYOK and local reasoning options.
 
 - [ ] **Step 5: Verify cleanup**
 
@@ -553,7 +553,7 @@ git commit -m "refactor: remove cloud account, subscription, and auth UI from se
 
 Find this line:
 ```typescript
-const isCloudAgent = settings.isSignedIn && settings.cloudAgentMode === "openwhispr";
+const isCloudAgent = settings.isSignedIn && settings.cloudAgentMode === "opencohere";
 ```
 
 Replace with:
@@ -587,18 +587,18 @@ const showModelPicker = true;
 
 Find the cloud mode conditional:
 ```typescript
-isSignedIn && cloudTranscriptionMode === "openwhispr" && !useLocalWhisper;
+isSignedIn && cloudTranscriptionMode === "opencohere" && !useLocalWhisper;
 ```
 
 Replace with `false` or remove the block that depends on it.
 
-Remove any mode selector options for `"openwhispr"` cloud mode. Keep BYOK and local options.
+Remove any mode selector options for `"opencohere"` cloud mode. Keep BYOK and local options.
 
 - [ ] **Step 3: Verify cleanup**
 
 ```bash
-grep -rn "isSignedIn\|useAuth\|openwhispr" src/components/AgentOverlay.tsx src/components/notes/UploadAudioView.tsx 2>/dev/null
-grep -rn "isSignedIn\|useAuth\|openwhispr" src/components/UploadAudioView.tsx 2>/dev/null
+grep -rn "isSignedIn\|useAuth\|opencohere" src/components/AgentOverlay.tsx src/components/notes/UploadAudioView.tsx 2>/dev/null
+grep -rn "isSignedIn\|useAuth\|opencohere" src/components/UploadAudioView.tsx 2>/dev/null
 ```
 
 Expected: no matches.
@@ -620,13 +620,13 @@ git commit -m "refactor: remove cloud agent and auth conditionals from AgentOver
 
 - [ ] **Step 1: Remove OAuth protocol registration**
 
-Find and remove the `getOAuthProtocol()` function (~lines 105-117) and `registerOpenWhisprProtocol()` function (~lines 128-137).
+Find and remove the `getOAuthProtocol()` function (~lines 105-117) and `registerOpenCohereProtocol()` function (~lines 128-137).
 
 Remove the protocol registration call (~lines 139-142).
 
 - [ ] **Step 2: Remove OAuth callback handling in single-instance lock**
 
-In the `app.on('second-instance', ...)` handler, remove any code that parses OAuth callback URLs (looking for `openwhispr://` protocol deep links).
+In the `app.on('second-instance', ...)` handler, remove any code that parses OAuth callback URLs (looking for `opencohere://` protocol deep links).
 
 - [ ] **Step 3: Remove auth cookie management**
 
@@ -670,11 +670,11 @@ Remove these lines from `.env.example`:
 # Get your auth URL from the Neon console after enabling Neon Auth
 VITE_NEON_AUTH_URL=
 
-# OpenWhispr Cloud API (optional - for cloud transcription)
-VITE_OPENWHISPR_API_URL=
+# OpenCohere Cloud API (optional - for cloud transcription)
+VITE_OPENCOHERE_API_URL=
 ```
 
-Also rename `OPENWHISPR_LOG_LEVEL` to `OPENCOHERE_LOG_LEVEL` (or just `LOG_LEVEL`).
+Also rename `OPENCOHERE_LOG_LEVEL` to `OPENCOHERE_LOG_LEVEL` (or just `LOG_LEVEL`).
 
 - [ ] **Step 3: Commit**
 
@@ -736,10 +736,10 @@ grep -rn "isSignedIn" src/
 
 For each match: either remove the conditional (if it gates cloud-only code) or simplify it (if it gates BYOK UI that should now always show).
 
-- [ ] **Step 4: Search for `openwhispr` references in code (not docs/readme)**
+- [ ] **Step 4: Search for `opencohere` references in code (not docs/readme)**
 
 ```bash
-grep -rn "openwhispr\|OpenWhispr" src/ main.js preload.js
+grep -rn "opencohere\|OpenCohere" src/ main.js preload.js
 ```
 
 These will be handled in the rebrand task, but flag any that are functional (not just strings).
@@ -761,7 +761,7 @@ git commit -m "chore: fix all remaining cloud/auth references across codebase"
 
 ---
 
-### Task 14: Rebrand OpenWhispr → OpenCohere
+### Task 14: Rebrand OpenCohere → OpenCohere
 
 **Files:**
 - Modify: `package.json`
@@ -775,21 +775,21 @@ git commit -m "chore: fix all remaining cloud/auth references across codebase"
 
 Change:
 ```json
-"name": "open-whispr"
+"name": "open-cohere"
 ```
 To:
 ```json
 "name": "open-cohere"
 ```
 
-Update the `description` field to reference OpenCohere instead of OpenWhispr.
+Update the `description` field to reference OpenCohere instead of OpenCohere.
 
 - [ ] **Step 2: Update electron-builder.json**
 
 Change:
 ```json
 "appId": "com.herotools.openwispr"
-"productName": "OpenWhispr"
+"productName": "OpenCohere"
 ```
 To:
 ```json
@@ -800,21 +800,21 @@ To:
 Remove the `protocols` block (OAuth protocol — already non-functional after Task 10):
 ```json
 "protocols": {
-  "name": "OpenWhispr Protocol",
-  "schemes": ["openwhispr"]
+  "name": "OpenCohere Protocol",
+  "schemes": ["opencohere"]
 },
 ```
 
 - [ ] **Step 3: Update UI-facing strings**
 
 ```bash
-grep -rn "OpenWhispr\|openwhispr\|open-whispr\|open_whispr" src/ main.js preload.js --include="*.ts" --include="*.tsx" --include="*.js"
+grep -rn "OpenCohere\|opencohere\|open-cohere\|open_whispr" src/ main.js preload.js --include="*.ts" --include="*.tsx" --include="*.js"
 ```
 
 For each match, replace with the appropriate OpenCohere variant:
-- `OpenWhispr` → `OpenCohere`
-- `openwhispr` → `opencohere`
-- `open-whispr` → `open-cohere`
+- `OpenCohere` → `OpenCohere`
+- `opencohere` → `opencohere`
+- `open-cohere` → `open-cohere`
 
 Be careful with:
 - localStorage keys: changing these would lose user settings. Decide whether to migrate or keep old keys.
@@ -823,16 +823,16 @@ Be careful with:
 
 - [ ] **Step 4: Update .env.example**
 
-Rename `OPENWHISPR_LOG_LEVEL` to `OPENCOHERE_LOG_LEVEL` (if not already done in Task 11).
+Rename `OPENCOHERE_LOG_LEVEL` to `OPENCOHERE_LOG_LEVEL` (if not already done in Task 11).
 
 - [ ] **Step 5: Update README.md**
 
-Replace all references to OpenWhispr with OpenCohere. Update the project description, remove sections about cloud features, subscriptions, and referrals. Keep sections about local transcription, BYOK, and all local features.
+Replace all references to OpenCohere with OpenCohere. Update the project description, remove sections about cloud features, subscriptions, and referrals. Keep sections about local transcription, BYOK, and all local features.
 
 - [ ] **Step 6: Update .github/ files**
 
 ```bash
-grep -rn "OpenWhispr\|openwhispr" .github/
+grep -rn "OpenCohere\|opencohere" .github/
 ```
 
 Update issue templates, CI configs, and any other GitHub files.
@@ -843,13 +843,13 @@ Update issue templates, CI configs, and any other GitHub files.
 ls resources/
 ```
 
-Note any icons, images, or assets that contain "OpenWhispr" branding. These need new assets (out of scope for this plan — just document them).
+Note any icons, images, or assets that contain "OpenCohere" branding. These need new assets (out of scope for this plan — just document them).
 
 - [ ] **Step 8: Commit**
 
 ```bash
 git add -A
-git commit -m "rebrand: OpenWhispr → OpenCohere across codebase"
+git commit -m "rebrand: OpenCohere → OpenCohere across codebase"
 ```
 
 ---
@@ -867,15 +867,15 @@ Expected: clean compile.
 - [ ] **Step 2: Search for any remaining cloud references**
 
 ```bash
-grep -rn "neonAuth\|useAuth\|useUsage\|isSignedIn\|cloudTranscribe\|cloudReason\|VITE_NEON_AUTH\|VITE_OPENWHISPR" src/ main.js preload.js
+grep -rn "neonAuth\|useAuth\|useUsage\|isSignedIn\|cloudTranscribe\|cloudReason\|VITE_NEON_AUTH\|VITE_OPENCOHERE" src/ main.js preload.js
 ```
 
 Expected: no matches.
 
-- [ ] **Step 3: Search for any remaining OpenWhispr references (excluding docs/)**
+- [ ] **Step 3: Search for any remaining OpenCohere references (excluding docs/)**
 
 ```bash
-grep -rn "OpenWhispr\|openwhispr\|open-whispr" src/ main.js preload.js electron-builder.json package.json .env.example
+grep -rn "OpenCohere\|opencohere\|open-cohere" src/ main.js preload.js electron-builder.json package.json .env.example
 ```
 
 Expected: no matches.

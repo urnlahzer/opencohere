@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **System Audio Permission Clarity**: Renamed "Screen Recording" to "System Audio" across all permission prompts, onboarding, and settings — makes it clear that OpenWhispr captures other participants' audio, not your screen
+- **System Audio Permission Clarity**: Renamed "Screen Recording" to "System Audio" across all permission prompts, onboarding, and settings — makes it clear that OpenCohere captures other participants' audio, not your screen
 - **Improved Permission Copy**: Microphone permission now reads "Captures your voice for transcription"; System Audio reads "Captures other participants' audio from calls and meetings. We never record your screen."
 - **Electron 39**: Upgraded from Electron 36 to 39, which uses the CoreAudio Tap API by default on macOS 14.2+ — eliminates the purple "screen recording" indicator, the "Your screen is being observed" lock screen message, and the misleading "Screen & System Audio Recording" permission prompt. Users now see "System Audio Recording Only" instead
 - **NSAudioCaptureUsageDescription**: Added the new macOS 14.2+ audio capture usage description to Info.plist, enabling the separate system audio permission dialog
@@ -357,7 +357,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Windows Push-to-Talk Refactor**: Moved PTT state management (hold timing, recording tracking, cooldown) from main process into `windowManager` for cleaner separation and consistency with macOS PTT patterns
 - **Audio Recording Reentrancy Guards**: Added lock refs to `useAudioRecording` start/stop to prevent concurrent calls from rapid key presses
 - **Synchronous Activation Mode**: `getActivationMode()` is now synchronous (reads from cache), removing unnecessary async overhead in all PTT and hotkey handlers
-- **Default Agent Name**: Set default agent name to OpenWhispr
+- **Default Agent Name**: Set default agent name to OpenCohere
 
 ### Fixed
 
@@ -369,7 +369,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Deepgram Streaming Liveness Check**: Detects unresponsive warm connections within 2.5s and transparently reconnects with audio replay
-- **Batch Transcription Fallback**: If streaming produces no text, automatically falls back to batch transcription via OpenWhispr Cloud
+- **Batch Transcription Fallback**: If streaming produces no text, automatically falls back to batch transcription via OpenCohere Cloud
 - **Full Locale Codes**: Pass full locale codes (e.g. en-US, zh-CN) to Deepgram instead of stripping to base codes, preserving dialect precision
 
 ### Fixed
@@ -531,7 +531,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **OpenWhispr Cloud**: Cloud-native transcription service — sign in and transcribe without managing API keys
+- **OpenCohere Cloud**: Cloud-native transcription service — sign in and transcribe without managing API keys
   - Google OAuth and email/password authentication via Neon Auth
   - Email verification flow with polling and resend support
   - Password reset via email magic links
@@ -554,8 +554,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Signed-in users get a streamlined 3-step flow (Welcome → Setup → Activation)
   - Non-signed-in users get a 4-step flow with transcription mode selection
   - Permissions merged into Setup step for signed-in users
-- **Transcription Mode Architecture**: Unified mode selection across OpenWhispr Cloud, Bring Your Own Key (BYOK), and Local
-  - Signed-in users default to OpenWhispr Cloud
+- **Transcription Mode Architecture**: Unified mode selection across OpenCohere Cloud, Bring Your Own Key (BYOK), and Local
+  - Signed-in users default to OpenCohere Cloud
   - Non-signed-in users choose between BYOK and Local
 - **Design System Overhaul**: Complete refactor of styling to use design tokens throughout the codebase
   - Button component now uses `text-foreground`, `bg-muted`, `border-border` instead of hardcoded hex values
@@ -928,7 +928,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Button to fully quit OpenWhispr processes from the application
+- Button to fully quit OpenCohere processes from the application
 - Linux terminal detection with automatic paste key switching (Ctrl+Shift+V for terminals)
 
 ### Changed
@@ -942,7 +942,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Persist OpenAI key before onboarding test to prevent key loss during setup
 - Windows Python discovery now correctly handles output parsing
 - Keep FFmpeg debug schema as boolean type
-- Fixed OpenWhispr documentation paths
+- Fixed OpenCohere documentation paths
 - Windows: Resolved issue #16 with WAV validation, registry-based Python detection, and normalized FFmpeg paths
 
 ## [1.0.13] - 2025-12-24
@@ -988,7 +988,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Local Whisper now finds Python on Windows more reliably by scanning typical install paths, honoring `OPENWHISPR_PYTHON`, and surfacing actionable ENOENT guidance.
+- Local Whisper now finds Python on Windows more reliably by scanning typical install paths, honoring `OPENCOHERE_PYTHON`, and surfacing actionable ENOENT guidance.
 - Whisper installs automatically retry pip operations that hit PEP‑668, TOML, or permission errors, sanitizing the output and falling back to `--user` + legacy resolver when needed.
 
 ## [1.0.11] - 2025-10-13
@@ -1065,7 +1065,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **macOS Window Lifecycle**: Ensured the dictation panel keeps the app visible in Dock and Command-Tab while retaining floating behaviour across spaces.
 - **Control Panel Stability**: Reworked close/minimize handling so the panel stays interactive when switching apps and reopens cleanly without spawning duplicate windows.
 - **Always-On-Top Enforcement**: Centralised the logic that reapplies floating window levels, eliminating redundant timers and focus quirks.
-- **Menu Labelling**: macOS application menu items now display the correct OpenWhispr casing instead of "open-whispr".
+- **Menu Labelling**: macOS application menu items now display the correct OpenCohere casing instead of "open-cohere".
 - **Non-mac Hotkey Guard**: Prevented the mac-only Globe shortcut from being saved on Windows/Linux.
 
 ## [1.0.5] - 2025-09-10
@@ -1269,7 +1269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of OpenWhispr (formerly OpenWispr)
+- Initial release of OpenCohere (formerly OpenWispr)
 - Desktop dictation application using OpenAI Whisper
 - Local and cloud-based speech-to-text transcription
 - Real-time audio recording and processing

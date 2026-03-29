@@ -1,9 +1,9 @@
 const { execFileSync } = require("child_process");
 const debugLogger = require("./debugLogger");
 
-const DBUS_SERVICE_NAME = "com.openwhispr.App";
-const DBUS_OBJECT_PATH = "/com/openwhispr/App";
-const DBUS_INTERFACE = "com.openwhispr.App";
+const DBUS_SERVICE_NAME = "com.opencohere.App";
+const DBUS_OBJECT_PATH = "/com/opencohere/App";
+const DBUS_INTERFACE = "com.opencohere.App";
 
 // Map Electron modifier names to Hyprland modifier names
 const ELECTRON_TO_HYPRLAND_MOD = {
@@ -125,7 +125,7 @@ class HyprlandShortcutManager {
   }
 
   _createInterfaceClass(dbusModule, callback) {
-    class OpenWhisprInterface extends dbusModule.interface.Interface {
+    class OpenCohereInterface extends dbusModule.interface.Interface {
       constructor() {
         super(DBUS_INTERFACE);
         this._callback = callback;
@@ -138,13 +138,13 @@ class HyprlandShortcutManager {
       }
     }
 
-    OpenWhisprInterface.configureMembers({
+    OpenCohereInterface.configureMembers({
       methods: {
         Toggle: { inSignature: "", outSignature: "" },
       },
     });
 
-    return OpenWhisprInterface;
+    return OpenCohereInterface;
   }
 
   static isValidHotkey(hotkey) {

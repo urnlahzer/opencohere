@@ -1,4 +1,4 @@
-# OpenWhispr Complete Cleanup Instructions
+# OpenCohere Complete Cleanup Instructions
 
 ## The Problem
 
@@ -21,12 +21,12 @@ This can lead to issues like:
 ### Step 1: Run the automated cleanup script
 
 ```bash
-cd /path/to/open-whispr
+cd /path/to/open-cohere
 bash scripts/complete-uninstall.sh
 ```
 
 This script will:
-- Stop all OpenWhispr processes
+- Stop all OpenCohere processes
 - Remove the production app
 - Delete all application data
 - Clear caches and logs
@@ -58,52 +58,52 @@ npm run dev
 
 ## Manual Cleanup (if script doesn't work)
 
-### 1. Stop all OpenWhispr processes
+### 1. Stop all OpenCohere processes
 
 ```bash
 # Kill production app
-pkill -f "OpenWhispr"
+pkill -f "OpenCohere"
 
 # Kill dev processes
-pkill -f "open-whispr"
+pkill -f "open-cohere"
 pkill -f "electron"
 ```
 
 ### 2. Remove the Application
 
 ```bash
-rm -rf /Applications/OpenWhispr.app
+rm -rf /Applications/OpenCohere.app
 ```
 
 ### 3. Remove Application Data
 
 **Application Support** (contains databases, settings, logs):
 ```bash
-rm -rf "$HOME/Library/Application Support/OpenWhispr"
-rm -rf "$HOME/Library/Application Support/open-whispr"
+rm -rf "$HOME/Library/Application Support/OpenCohere"
+rm -rf "$HOME/Library/Application Support/open-cohere"
 ```
 
 **Preferences** (system-level settings):
 ```bash
-rm -rf "$HOME/Library/Preferences/com.openwhispr.app.plist"
-rm -rf "$HOME/Library/Preferences/com.electron.openwhispr.plist"
+rm -rf "$HOME/Library/Preferences/com.opencohere.app.plist"
+rm -rf "$HOME/Library/Preferences/com.electron.opencohere.plist"
 ```
 
 **Caches**:
 ```bash
-rm -rf "$HOME/Library/Caches/OpenWhispr"
-rm -rf "$HOME/Library/Caches/open-whispr"
+rm -rf "$HOME/Library/Caches/OpenCohere"
+rm -rf "$HOME/Library/Caches/open-cohere"
 ```
 
 **Logs**:
 ```bash
-rm -rf "$HOME/Library/Logs/OpenWhispr"
-rm -rf "$HOME/Library/Logs/open-whispr"
+rm -rf "$HOME/Library/Logs/OpenCohere"
+rm -rf "$HOME/Library/Logs/open-cohere"
 ```
 
 **Saved Application State**:
 ```bash
-rm -rf "$HOME/Library/Saved Application State/com.openwhispr.app.savedState"
+rm -rf "$HOME/Library/Saved Application State/com.opencohere.app.savedState"
 ```
 
 ### 4. Remove Whisper Models (optional, ~2-3GB)
@@ -117,7 +117,7 @@ rm -rf "$HOME/.cache/huggingface"
 
 ```bash
 find /tmp -name "whisper_audio_*" -delete
-find /tmp -name "openwhispr_*" -delete
+find /tmp -name "opencohere_*" -delete
 ```
 
 ### 6. Clean Development Environment
@@ -125,7 +125,7 @@ find /tmp -name "openwhispr_*" -delete
 If you're setting up for development:
 
 ```bash
-cd /path/to/open-whispr
+cd /path/to/open-cohere
 
 # Remove dev database and env file
 rm -f .env
@@ -146,10 +146,10 @@ The cleanup script **cannot** remove macOS system permissions. These persist eve
 
 ```bash
 # Reset microphone permission
-tccutil reset Microphone com.openwhispr.app
+tccutil reset Microphone com.opencohere.app
 
 # Reset accessibility permission
-tccutil reset Accessibility com.openwhispr.app
+tccutil reset Accessibility com.opencohere.app
 
 # For dev mode (Terminal)
 tccutil reset Microphone com.apple.Terminal
@@ -190,7 +190,7 @@ nvm use --lts
 ### 2. Clean Install Dependencies
 
 ```bash
-cd /path/to/open-whispr
+cd /path/to/open-cohere
 
 # Remove everything
 rm -rf node_modules package-lock.json
@@ -246,8 +246,8 @@ bash scripts/complete-uninstall.sh
 **Solution:**
 ```bash
 # Remove database files specifically
-rm -rf "$HOME/Library/Application Support/OpenWhispr"
-rm -rf "$HOME/Library/Application Support/open-whispr"
+rm -rf "$HOME/Library/Application Support/OpenCohere"
+rm -rf "$HOME/Library/Application Support/open-cohere"
 
 # Rebuild dependencies
 npm run postinstall
@@ -266,19 +266,19 @@ npm run postinstall
 
 ## Data Locations Reference
 
-All OpenWhispr data is stored in these locations:
+All OpenCohere data is stored in these locations:
 
 | Type | Location |
 |------|----------|
-| **Databases** | `~/Library/Application Support/OpenWhispr/transcriptions.db` |
-| **Dev Database** | `~/Library/Application Support/OpenWhispr/transcriptions-dev.db` |
+| **Databases** | `~/Library/Application Support/OpenCohere/transcriptions.db` |
+| **Dev Database** | `~/Library/Application Support/OpenCohere/transcriptions-dev.db` |
 | **Settings** | Browser localStorage (in Electron's userData) |
 | **API Keys** | `.env` file in project root (dev) |
-| **Logs** | `~/Library/Application Support/OpenWhispr/logs/` |
-| **Debug Logs** | `~/Library/Logs/OpenWhispr/` |
+| **Logs** | `~/Library/Application Support/OpenCohere/logs/` |
+| **Debug Logs** | `~/Library/Logs/OpenCohere/` |
 | **Whisper Models** | `~/.cache/whisper/` |
-| **Preferences** | `~/Library/Preferences/com.openwhispr.app.plist` |
-| **Caches** | `~/Library/Caches/OpenWhispr/` |
+| **Preferences** | `~/Library/Preferences/com.opencohere.app.plist` |
+| **Caches** | `~/Library/Caches/OpenCohere/` |
 | **Temp Audio** | `/tmp/whisper_audio_*.wav` |
 
 ---
@@ -301,6 +301,6 @@ If cleanup doesn't solve your issue:
 2. Check Node version: `node -v`
 3. Check Electron version: `npm list electron`
 4. Run with debug mode: `npm run dev -- --debug`
-5. Check logs in: `~/Library/Application Support/OpenWhispr/logs/`
+5. Check logs in: `~/Library/Application Support/OpenCohere/logs/`
 
-Report issues with this information at: [GitHub Issues](https://github.com/your-repo/open-whispr/issues)
+Report issues with this information at: [GitHub Issues](https://github.com/your-repo/open-cohere/issues)

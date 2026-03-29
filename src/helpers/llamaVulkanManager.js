@@ -176,7 +176,7 @@ class LlamaVulkanManager {
     const https = require("https");
     return new Promise((resolve, reject) => {
       const headers = {
-        "User-Agent": "OpenWhispr/1.0",
+        "User-Agent": "OpenCohere/1.0",
         Accept: "application/vnd.github+json",
       };
       const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;

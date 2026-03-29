@@ -96,7 +96,7 @@ const QT_KEYS = {
   pause: 0x01000008,
 };
 
-const COMPONENT_NAME = "openwhispr";
+const COMPONENT_NAME = "opencohere";
 
 class KDEShortcutManager {
   constructor() {
@@ -168,7 +168,7 @@ class KDEShortcutManager {
       iface.on("globalShortcutPressed", (componentUnique, shortcutUnique, timestamp) => {
         debugLogger.log("[KDEShortcut] Shortcut pressed", { componentUnique, shortcutUnique });
         // Tested on KDE Plasma 6 (Fedora 43): signal sends the actionFriendly
-        // name ("OpenWhispr") not the actionUnique ("dictation"). The fallback
+        // name ("OpenCohere") not the actionUnique ("dictation"). The fallback
         // maps friendly names back to slot names.
         const callback =
           this.callbacks.get(shortcutUnique) || this._findCallbackByFriendlyName(shortcutUnique);
@@ -195,8 +195,8 @@ class KDEShortcutManager {
     // Map friendly names back to slot names
     const friendlyToSlot = {};
     for (const slotName of this.registeredSlots) {
-      friendlyToSlot[`OpenWhispr ${slotName}`] = slotName;
-      friendlyToSlot[`OpenWhispr`] = "dictation"; // legacy compat
+      friendlyToSlot[`OpenCohere ${slotName}`] = slotName;
+      friendlyToSlot[`OpenCohere`] = "dictation"; // legacy compat
     }
     const slotName = friendlyToSlot[name];
     return slotName ? this.callbacks.get(slotName) : null;
@@ -217,7 +217,7 @@ class KDEShortcutManager {
     }
 
     // actionId: [componentUnique, componentFriendly, actionUnique, actionFriendly]
-    const actionId = [COMPONENT_NAME, "OpenWhispr", slotName, `OpenWhispr ${slotName}`];
+    const actionId = [COMPONENT_NAME, "OpenCohere", slotName, `OpenCohere ${slotName}`];
 
     try {
       // Register action then set shortcut
@@ -252,7 +252,7 @@ class KDEShortcutManager {
   async unregisterKeybinding(slotName = "dictation") {
     if (!this.kglobalaccel) return;
 
-    const actionId = [COMPONENT_NAME, "OpenWhispr", slotName, `OpenWhispr ${slotName}`];
+    const actionId = [COMPONENT_NAME, "OpenCohere", slotName, `OpenCohere ${slotName}`];
 
     try {
       await this.kglobalaccel.unRegister(actionId);
@@ -270,7 +270,7 @@ class KDEShortcutManager {
     // clean up stale registrations from dead processes anyway.
     const promises = [];
     for (const slotName of this.registeredSlots) {
-      const actionId = [COMPONENT_NAME, "OpenWhispr", slotName, `OpenWhispr ${slotName}`];
+      const actionId = [COMPONENT_NAME, "OpenCohere", slotName, `OpenCohere ${slotName}`];
       try {
         promises.push(this.kglobalaccel?.unRegister(actionId));
       } catch {}
