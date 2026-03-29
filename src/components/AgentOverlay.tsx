@@ -92,14 +92,10 @@ export default function AgentOverlay() {
     ]);
     setAgentState("streaming");
 
-    const isCloudAgent = settings.isSignedIn && settings.cloudAgentMode === "openwhispr";
-
     try {
       let fullContent = "";
 
-      const streamSource = isCloudAgent
-        ? ReasoningService.processTextStreamingCloud(llmMessages, { systemPrompt })
-        : ReasoningService.processTextStreaming(
+      const streamSource = ReasoningService.processTextStreaming(
             llmMessages,
             settings.agentModel,
             settings.agentProvider,
