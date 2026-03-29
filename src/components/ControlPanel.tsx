@@ -1,16 +1,13 @@
 import React, { Suspense, useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Download, RefreshCw, Loader2, AlertTriangle, Zap, ChevronLeft } from "lucide-react";
-import UpgradePrompt from "./UpgradePrompt";
+import { Download, RefreshCw, Loader2, Zap, ChevronLeft } from "lucide-react";
 import { ConfirmDialog, AlertDialog } from "./ui/dialog";
 import { useDialogs } from "../hooks/useDialogs";
 import { useHotkey } from "../hooks/useHotkey";
 import { useToast } from "./ui/Toast";
 import { useUpdater } from "../hooks/useUpdater";
 import { useSettings } from "../hooks/useSettings";
-import { useAuth } from "../hooks/useAuth";
-import { useUsage } from "../hooks/useUsage";
 import {
   useTranscriptions,
   initializeTranscriptions,
@@ -28,7 +25,6 @@ import HistoryView from "./HistoryView";
 const platform = getCachedPlatform();
 
 const SettingsModal = React.lazy(() => import("./SettingsModal"));
-const ReferralModal = React.lazy(() => import("./ReferralModal"));
 const PersonalNotesView = React.lazy(() => import("./notes/PersonalNotesView"));
 const DictionaryView = React.lazy(() => import("./DictionaryView"));
 const UploadAudioView = React.lazy(() => import("./notes/UploadAudioView"));
@@ -40,14 +36,10 @@ export default function ControlPanel() {
   const history = useTranscriptions();
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-  const [limitData, setLimitData] = useState<{ wordsUsed: number; limit: number } | null>(null);
-  const hasShownUpgradePrompt = useRef(false);
   const [settingsSection, setSettingsSection] = useState<string | undefined>();
   const [aiCTADismissed, setAiCTADismissed] = useState(
     () => localStorage.getItem("aiCTADismissed") === "true"
   );
-  const [showReferrals, setShowReferrals] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showCloudMigrationBanner, setShowCloudMigrationBanner] = useState(false);
   const [activeView, setActiveView] = useState<ControlPanelView>("home");
@@ -64,7 +56,6 @@ export default function ControlPanel() {
   const [gpuBannerDismissed, setGpuBannerDismissed] = useState(
     () => localStorage.getItem("gpuBannerDismissedUnified") === "true"
   );
-  const cloudMigrationProcessed = useRef(false);
   const updateReadyToastShown = useRef(false);
   const updateErrorToastShown = useRef<Error | null>(null);
   const { hotkey } = useHotkey();
@@ -73,11 +64,7 @@ export default function ControlPanel() {
     useLocalWhisper,
     localTranscriptionProvider,
     useReasoningModel,
-    setUseLocalWhisper,
-    setCloudTranscriptionMode,
   } = useSettings();
-  const { isSignedIn, isLoaded: authLoaded, user } = useAuth();
-  const usage = useUsage();
 
   const {
     status: updateStatus,
@@ -142,53 +129,6 @@ export default function ControlPanel() {
       updateErrorToastShown.current = null;
     }
   }, [updateError, toast, t]);
-
-  useEffect(() => {
-    const dispose = window.electronAPI?.onLimitReached?.(
-      (data: { wordsUsed: number; limit: number }) => {
-        if (!hasShownUpgradePrompt.current) {
-          hasShownUpgradePrompt.current = true;
-          setLimitData(data);
-          setShowUpgradePrompt(true);
-        } else {
-          toast({
-            title: t("controlPanel.limit.weeklyTitle"),
-            description: t("controlPanel.limit.weeklyDescription"),
-            duration: 5000,
-          });
-        }
-      }
-    );
-
-    return () => {
-      dispose?.();
-    };
-  }, [toast, t]);
-
-  useEffect(() => {
-    if (!usage?.isPastDue || !usage.hasLoaded) return;
-    if (sessionStorage.getItem("pastDueNotified")) return;
-    sessionStorage.setItem("pastDueNotified", "true");
-    toast({
-      title: t("controlPanel.billing.pastDueTitle"),
-      description: t("controlPanel.billing.pastDueDescription"),
-      variant: "destructive",
-      duration: 8000,
-    });
-  }, [usage?.isPastDue, usage?.hasLoaded, toast, t]);
-
-  useEffect(() => {
-    if (!authLoaded || !isSignedIn || cloudMigrationProcessed.current) return;
-    const isPending = localStorage.getItem("pendingCloudMigration") === "true";
-    const alreadyShown = localStorage.getItem("cloudMigrationShown") === "true";
-    if (!isPending || alreadyShown) return;
-
-    cloudMigrationProcessed.current = true;
-    setUseLocalWhisper(false);
-    setCloudTranscriptionMode("openwhispr");
-    localStorage.removeItem("pendingCloudMigration");
-    setShowCloudMigrationBanner(true);
-  }, [authLoaded, isSignedIn, setUseLocalWhisper, setCloudTranscriptionMode]);
 
   useEffect(() => {
     if (platform === "darwin" || gpuBannerDismissed) return;
@@ -508,13 +448,6 @@ export default function ControlPanel() {
         onOk={() => {}}
       />
 
-      <UpgradePrompt
-        open={showUpgradePrompt}
-        onOpenChange={setShowUpgradePrompt}
-        wordsUsed={limitData?.wordsUsed}
-        limit={limitData?.limit}
-      />
-
       {showSettings && (
         <Suspense fallback={null}>
           <SettingsModal
@@ -525,12 +458,6 @@ export default function ControlPanel() {
             }}
             initialSection={settingsSection}
           />
-        </Suspense>
-      )}
-
-      {showReferrals && (
-        <Suspense fallback={null}>
-          <ReferralModal open={showReferrals} onOpenChange={setShowReferrals} />
         </Suspense>
       )}
 
@@ -564,20 +491,6 @@ export default function ControlPanel() {
               setSettingsSection(undefined);
               setShowSettings(true);
             }}
-            onOpenReferrals={() => setShowReferrals(true)}
-            onUpgrade={() => {
-              setSettingsSection("plansBilling");
-              setShowSettings(true);
-            }}
-            onUpgradeCheckout={() => usage?.openCheckout()}
-            isOverLimit={usage?.isOverLimit ?? false}
-            userName={user?.name}
-            userEmail={user?.email}
-            userImage={user?.image}
-            isSignedIn={isSignedIn}
-            authLoaded={authLoaded}
-            isProUser={!!(usage?.isSubscribed || usage?.isTrial)}
-            usageLoaded={usage?.hasLoaded ?? false}
             updateAction={
               !updateStatus.isDevelopment &&
               (updateStatus.updateAvailable ||
@@ -626,38 +539,6 @@ export default function ControlPanel() {
             )}
           </div>
           <div className="flex-1 overflow-y-auto pt-1">
-            {usage?.isPastDue && activeView === "home" && (
-              <div className="max-w-3xl mx-auto w-full mb-3">
-                <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0 w-8 h-8 rounded-md bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-                      <AlertTriangle size={16} className="text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-amber-900 dark:text-amber-200 mb-0.5">
-                        {t("controlPanel.billing.pastDueTitle")}
-                      </p>
-                      <p className="text-xs text-amber-700 dark:text-amber-300/80 mb-2">
-                        {t("controlPanel.billing.bannerDescription", {
-                          limit: usage.limit.toLocaleString(),
-                        })}
-                      </p>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => {
-                          setSettingsSection("account");
-                          setShowSettings(true);
-                        }}
-                      >
-                        {t("controlPanel.billing.updatePayment")}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
               activeView === "home" &&
               !gpuBannerDismissed && (
