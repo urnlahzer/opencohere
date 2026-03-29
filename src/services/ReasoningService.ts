@@ -5,8 +5,7 @@ import { withRetry, createApiRetryStrategy } from "../utils/retry";
 import { API_ENDPOINTS, TOKEN_LIMITS, buildApiUrl, normalizeBaseUrl } from "../config/constants";
 import logger from "../utils/logger";
 import { isSecureEndpoint } from "../utils/urlUtils";
-import { withSessionRefresh } from "../lib/neonAuth";
-import { getSettings, isCloudReasoningMode } from "../stores/settingsStore";
+import { getSettings } from "../stores/settingsStore";
 
 class ReasoningService extends BaseReasoningService {
   private apiKeyCache: SecureCache<string>;
@@ -1032,62 +1031,14 @@ class ReasoningService extends BaseReasoningService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private async processWithOpenWhispr(
-    text: string,
-    model: string,
-    agentName: string | null = null,
-    config: ReasoningConfig = {}
+    _text?: string,
+    _model?: string,
+    _agentName?: string | null,
+    _config?: ReasoningConfig
   ): Promise<string> {
-    logger.logReasoning("OPENWHISPR_START", { model, agentName });
-
-    if (this.isProcessing) {
-      throw new Error("Already processing a request");
-    }
-
-    this.isProcessing = true;
-
-    try {
-      const customDictionary = this.getCustomDictionary();
-      const language = this.getPreferredLanguage();
-      const locale = this.getUiLanguage();
-
-      const result = await withSessionRefresh(async () => {
-        const res = await window.electronAPI?.cloudReason?.(text, {
-          agentName,
-          customDictionary,
-          customPrompt: this.getCustomPrompt(),
-          systemPrompt: config.systemPrompt,
-          language,
-          locale,
-        });
-
-        if (!res?.success) {
-          const err: any = new Error(res?.error || "OpenWhispr cloud reasoning failed");
-          err.code = res?.code;
-          throw err;
-        }
-
-        return res;
-      });
-
-      logger.logReasoning("OPENWHISPR_SUCCESS", {
-        model: result.model,
-        provider: result.provider,
-        resultLength: result.text.length,
-        promptMode: result.promptMode,
-        matchType: result.matchType,
-      });
-
-      return result.text;
-    } catch (error) {
-      logger.logReasoning("OPENWHISPR_ERROR", {
-        model,
-        error: (error as Error).message,
-      });
-      throw error;
-    } finally {
-      this.isProcessing = false;
-    }
+    throw new Error("Cloud reasoning is not supported. Please configure a BYOK provider.");
   }
 
   private getCustomPrompt(): string | undefined {
@@ -1309,11 +1260,6 @@ class ReasoningService extends BaseReasoningService {
 
   async isAvailable(): Promise<boolean> {
     try {
-      if (isCloudReasoningMode()) {
-        logger.logReasoning("API_KEY_CHECK", { cloudReasoningMode: true });
-        return true;
-      }
-
       const settings = getSettings();
       if (settings.reasoningProvider === "custom" && settings.cloudReasoningBaseUrl?.trim()) {
         logger.logReasoning("API_KEY_CHECK", {

@@ -24,10 +24,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "../ui/input";
 import type { FolderItem } from "../../types/electron";
 import { findDefaultFolder, MEETINGS_FOLDER_NAME } from "./shared";
-import { useUsage } from "../../hooks/useUsage";
 import { useSettings } from "../../hooks/useSettings";
 import { getAllReasoningModels } from "../../models/ModelRegistry";
-import { useSettingsStore, selectIsCloudReasoningMode } from "../../stores/settingsStore";
+import { useSettingsStore } from "../../stores/settingsStore";
 import { generateNoteTitle } from "../../utils/generateTitle";
 
 const TranscriptionModelPicker = React.lazy(() => import("../TranscriptionModelPicker"));
@@ -37,8 +36,6 @@ type UploadState = "idle" | "selected" | "transcribing" | "complete" | "error";
 const SUPPORTED_EXTENSIONS = ["mp3", "wav", "m4a", "webm", "ogg", "flac", "aac"];
 
 const BYOK_MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB — hard limit for bring-your-own-key
-const CLOUD_FREE_MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB — free plan cloud limit
-const CLOUD_PRO_MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB — pro plan cloud limit
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -85,8 +82,7 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [providerReady, setProviderReady] = useState<boolean | null>(null);
 
-  const usage = useUsage();
-  const isProUser = usage?.isSubscribed || usage?.isTrial;
+  const isProUser = false;
 
   const {
     useLocalWhisper,
@@ -116,26 +112,21 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     updateTranscriptionSettings,
   } = useSettings();
 
-  const isCloudReasoning = useSettingsStore(selectIsCloudReasoningMode);
-  const effectiveReasoningModel = useSettingsStore((s) =>
-    selectIsCloudReasoningMode(s) ? "" : s.reasoningModel
-  );
+  const isCloudReasoning = false;
+  const effectiveReasoningModel = useSettingsStore((s) => s.reasoningModel);
   const useReasoningModel = useSettingsStore((s) => s.useReasoningModel);
 
-  const isOpenWhisprCloud = false;
-  const usageLoaded = usage?.hasLoaded ?? false;
-  const showSetup = usageLoaded && !isProUser && !setupDismissed && state === "idle";
+  const showSetup = !isProUser && !setupDismissed && state === "idle";
   const showModelPicker = true;
   const shouldCenter = !showSetup && !advancedOpen;
 
-  // Mode detection
-  const isByok = !useLocalWhisper && !isOpenWhisprCloud;
+  // Mode detection: always BYOK (no cloud mode)
+  const isByok = !useLocalWhisper;
 
   // Mode-aware file size validation
   // Local: no limits at all
-  // BYOK: 25 MB hard max regardless of plan
-  // Cloud free: 25 MB max (upgrade to Pro for more)
-  // Cloud pro: 500 MB max
+  // Custom endpoint: no file size restrictions
+  // BYOK: 25 MB hard max
   let fileTooLarge = false;
   let requiresUpgrade = false;
   let requiresAccount = false;
@@ -149,11 +140,6 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
       // Custom endpoints (e.g. local whisper.cpp): no file size restrictions
     } else if (isByok) {
       byokTooLarge = file.sizeBytes > BYOK_MAX_FILE_SIZE;
-    } else {
-      // Cloud (OpenWhispr) — user is always signed in here
-      fileTooLarge = file.sizeBytes > CLOUD_PRO_MAX_FILE_SIZE;
-      requiresUpgrade = !isProUser && file.sizeBytes > CLOUD_FREE_MAX_FILE_SIZE;
-      isLargeFile = file.sizeBytes > CLOUD_FREE_MAX_FILE_SIZE;
     }
   }
 
@@ -524,7 +510,7 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
               byokTooLarge={byokTooLarge}
               requiresAccount={requiresAccount}
               isProUser={!!isProUser}
-              onUpgrade={() => usage?.openCheckout()}
+              onUpgrade={() => {}}
             />
           )}
 

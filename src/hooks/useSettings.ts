@@ -52,7 +52,6 @@ export interface ApiKeySettings {
 }
 
 export interface PrivacySettings {
-  cloudBackupEnabled: boolean;
   telemetryEnabled: boolean;
   audioRetentionDays: number;
   dataRetentionEnabled: boolean;
@@ -68,7 +67,6 @@ export interface AgentModeSettings {
   agentKey: string;
   agentSystemPrompt: string;
   agentEnabled: boolean;
-  cloudAgentMode: string;
 }
 
 function useSettingsInternal() {
@@ -243,8 +241,6 @@ function useSettingsInternal() {
     setAutoLearnCorrections,
     keepTranscriptionInClipboard: store.keepTranscriptionInClipboard,
     setKeepTranscriptionInClipboard: store.setKeepTranscriptionInClipboard,
-    cloudBackupEnabled: store.cloudBackupEnabled,
-    setCloudBackupEnabled: store.setCloudBackupEnabled,
     telemetryEnabled: store.telemetryEnabled,
     setTelemetryEnabled: store.setTelemetryEnabled,
     audioRetentionDays: store.audioRetentionDays,

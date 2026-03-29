@@ -2114,117 +2114,13 @@ class IPCHandlers {
       return {};
     })();
 
-    const getApiUrl = () =>
-      process.env.OPENWHISPR_API_URL ||
-      process.env.VITE_OPENWHISPR_API_URL ||
-      runtimeEnv.VITE_OPENWHISPR_API_URL ||
-      "";
+    // Cloud API helpers (kept as stubs — cloud removed)
+    const getApiUrl = () => "";
+    const getSessionCookies = async () => "";
+    const getSessionCookiesFromWindow = async () => "";
 
-    const getAuthUrl = () =>
-      process.env.NEON_AUTH_URL ||
-      process.env.VITE_NEON_AUTH_URL ||
-      runtimeEnv.VITE_NEON_AUTH_URL ||
-      "";
-
-    const getSessionCookiesFromWindow = async (win) => {
-      const scopedUrls = [getAuthUrl(), getApiUrl()].filter(Boolean);
-      const cookiesByName = new Map();
-
-      for (const url of scopedUrls) {
-        try {
-          const scopedCookies = await win.webContents.session.cookies.get({ url });
-          for (const cookie of scopedCookies) {
-            if (!cookiesByName.has(cookie.name)) {
-              cookiesByName.set(cookie.name, cookie.value);
-            }
-          }
-        } catch (error) {
-          debugLogger.warn("Failed to read scoped auth cookies", {
-            url,
-            error: error.message,
-          });
-        }
-      }
-
-      // Fallback for older sessions where cookies are not URL-scoped as expected.
-      if (cookiesByName.size === 0) {
-        const allCookies = await win.webContents.session.cookies.get({});
-        for (const cookie of allCookies) {
-          if (!cookiesByName.has(cookie.name)) {
-            cookiesByName.set(cookie.name, cookie.value);
-          }
-        }
-      }
-
-      const cookieHeader = [...cookiesByName.entries()]
-        .map(([name, value]) => `${name}=${value}`)
-        .join("; ");
-
-      debugLogger.debug(
-        "Resolved auth cookies for cloud request",
-        {
-          cookieCount: cookiesByName.size,
-          scopedUrls,
-        },
-        "auth"
-      );
-
-      return cookieHeader;
-    };
-
-    const getSessionCookies = async (event) => {
-      const win = BrowserWindow.fromWebContents(event.sender);
-      if (!win) return "";
-      return getSessionCookiesFromWindow(win);
-    };
-
-
-    ipcMain.handle("meeting-transcribe-chain", async (event, blobUrl, opts = {}) => {
-      try {
-        const apiUrl = getApiUrl();
-        if (!apiUrl) throw new Error("OpenWhispr API URL not configured");
-
-        const cookieHeader = await getSessionCookies(event);
-        if (!cookieHeader) throw new Error("No session cookies available");
-
-        const response = await fetch(`${apiUrl}/api/transcribe-chain`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: cookieHeader,
-          },
-          body: JSON.stringify({
-            mediaUrl: blobUrl,
-            skipCleanup: opts.skipCleanup ?? false,
-            agentName: opts.agentName,
-            customDictionary: opts.customDictionary,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || `Chain failed: ${response.status}`);
-        }
-
-        fetch(`${apiUrl}/api/delete-audio`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Cookie: cookieHeader },
-          body: JSON.stringify({ url: blobUrl }),
-        }).catch((err) => debugLogger.warn("Blob cleanup failed", { error: err.message }));
-
-        return {
-          success: true,
-          text: data.text,
-          rawText: data.rawText,
-          cleanedText: data.cleanedText,
-          processingDurationSec: data.processingDurationSec,
-          speedupFactor: data.speedupFactor,
-        };
-      } catch (error) {
-        debugLogger.error("Meeting chain transcription error", { error: error.message });
-        return { success: false, error: error.message };
-      }
+    ipcMain.handle("meeting-transcribe-chain", async () => {
+      return { success: false, error: "Cloud meeting transcription is not supported." };
     });
 
     ipcMain.handle("retry-transcription", async (event, id) => {
@@ -2237,31 +2133,6 @@ class IPCHandlers {
           result = await this.parakeetManager.transcribeLocalParakeet(buffer, {});
         } else if (this.whisperManager?.serverManager?.isAvailable?.()) {
           result = await this.whisperManager.transcribeLocalWhisper(buffer, {});
-        }
-
-        // Fall back to cloud transcription
-        if (!result?.text) {
-          const win = BrowserWindow.fromWebContents(event.sender);
-          if (win) {
-            const cookieHeader = await getSessionCookiesFromWindow(win);
-            if (cookieHeader) {
-              const apiUrl = getApiUrl();
-              if (apiUrl) {
-                const { body, boundary } = buildMultipartBody(buffer, "audio.webm", "audio/webm", {
-                  clientType: "desktop",
-                  appVersion: app.getVersion(),
-                  sessionId: this.sessionId,
-                });
-                const url = new URL(`${apiUrl}/api/transcribe`);
-                const data = await postMultipart(url, body, boundary, {
-                  Cookie: cookieHeader,
-                });
-                if (data.statusCode === 200 && data.data?.text) {
-                  result = { text: data.data.text, source: "openwhispr", model: "cloud" };
-                }
-              }
-            }
-          }
         }
 
         if (!result?.text) {
@@ -2336,42 +2207,9 @@ class IPCHandlers {
     };
 
     const fetchRealtimeToken = async (event, options, { streams } = {}) => {
-      if (options.mode === "byok") {
-        const apiKey = this.environmentManager.getOpenAIKey();
-        if (!apiKey) throw new Error("No OpenAI API key configured. Add your key in Settings.");
-        return streams === 2 ? [apiKey, apiKey] : apiKey;
-      }
-
-      const apiUrl = getApiUrl();
-      if (!apiUrl) throw new Error("OpenWhispr API URL not configured");
-
-      const cookieHeader = await getSessionCookies(event);
-      if (!cookieHeader) throw new Error("No session cookies available");
-
-      const tokenResponse = await fetch(`${apiUrl}/api/openai-realtime-token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Cookie: cookieHeader },
-        body: JSON.stringify({
-          model: options.model,
-          language: options.language,
-          streams: streams || 1,
-        }),
-      });
-
-      if (!tokenResponse.ok) {
-        const err = await tokenResponse.json().catch(() => ({}));
-        throw new Error(err.error || `Token request failed: ${tokenResponse.status}`);
-      }
-
-      const data = await tokenResponse.json();
-      if (streams === 2) {
-        if (!data.clientSecrets || data.clientSecrets.length < 2) {
-          throw new Error("Expected two client secrets for dual-stream");
-        }
-        return data.clientSecrets;
-      }
-      if (!data.clientSecret) throw new Error("No client secret received");
-      return data.clientSecret;
+      const apiKey = this.environmentManager.getOpenAIKey();
+      if (!apiKey) throw new Error("No OpenAI API key configured. Add your key in Settings.");
+      return streams === 2 ? [apiKey, apiKey] : apiKey;
     };
 
     const getMeetingSystemAudioMode = () =>
@@ -2669,97 +2507,15 @@ class IPCHandlers {
     });
 
 
-    ipcMain.handle("cloud-agent-stream", async (event, messages, opts = {}) => {
-      try {
-        const apiUrl = getApiUrl();
-        if (!apiUrl) throw new Error("OpenWhispr API URL not configured");
-
-        const cookieHeader = await getSessionCookies(event);
-        if (!cookieHeader) throw new Error("No session cookies available");
-
-        debugLogger.debug(
-          "Cloud agent stream request",
-          { messageCount: messages?.length || 0 },
-          "cloud-api"
-        );
-
-        const response = await fetch(`${apiUrl}/api/agent/stream`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: cookieHeader,
-          },
-          body: JSON.stringify({
-            messages,
-            systemPrompt: opts.systemPrompt,
-            sessionId: this.sessionId,
-            clientType: "desktop",
-            appVersion: app.getVersion(),
-          }),
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            return { success: false, error: "Session expired", code: "AUTH_EXPIRED" };
-          }
-          const errorData = await response.json().catch(() => ({}));
-          return {
-            success: false,
-            error: errorData.error || `API error: ${response.status}`,
-          };
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const text = decoder.decode(value, { stream: true });
-            if (text) event.sender.send("agent-stream-chunk", text);
-          }
-        } finally {
-          reader.releaseLock();
-        }
-
-        event.sender.send("agent-stream-done");
-        return { success: true };
-      } catch (error) {
-        debugLogger.error("Cloud agent stream error:", error);
-        event.sender.send("agent-stream-done");
-        return { success: false, error: error.message };
-      }
+    ipcMain.handle("cloud-agent-stream", async (event) => {
+      event.sender.send("agent-stream-done");
+      return { success: false, error: "Cloud agent is not supported." };
     });
 
 
 
-    ipcMain.handle("get-stt-config", async (event) => {
-      try {
-        const apiUrl = getApiUrl();
-        if (!apiUrl) throw new Error("OpenWhispr API URL not configured");
-
-        const cookieHeader = await getSessionCookies(event);
-        if (!cookieHeader) throw new Error("No session cookies available");
-
-        const response = await fetch(`${apiUrl}/api/stt-config`, {
-          headers: { Cookie: cookieHeader },
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            return { success: false, error: "Session expired", code: "AUTH_EXPIRED" };
-          }
-          throw new Error(`API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return { success: true, ...data };
-      } catch (error) {
-        debugLogger.error("STT config fetch error:", error);
-        return null;
-      }
+    ipcMain.handle("get-stt-config", async () => {
+      return null;
     });
 
 
@@ -2956,42 +2712,8 @@ class IPCHandlers {
       return this.updateManager.getUpdateInfo();
     });
 
-    const fetchStreamingToken = async (event) => {
-      const apiUrl = getApiUrl();
-      if (!apiUrl) {
-        throw new Error("OpenWhispr API URL not configured");
-      }
-
-      const cookieHeader = await getSessionCookies(event);
-      if (!cookieHeader) {
-        throw new Error("No session cookies available");
-      }
-
-      const tokenResponse = await fetch(`${apiUrl}/api/streaming-token`, {
-        method: "POST",
-        headers: {
-          Cookie: cookieHeader,
-        },
-      });
-
-      if (!tokenResponse.ok) {
-        if (tokenResponse.status === 401) {
-          const err = new Error("Session expired");
-          err.code = "AUTH_EXPIRED";
-          throw err;
-        }
-        const errorData = await tokenResponse.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `Failed to get streaming token: ${tokenResponse.status}`
-        );
-      }
-
-      const { token } = await tokenResponse.json();
-      if (!token) {
-        throw new Error("No token received from API");
-      }
-
-      return token;
+    const fetchStreamingToken = async () => {
+      throw new Error("Cloud streaming tokens are not supported.");
     };
 
     ipcMain.handle("assemblyai-streaming-warmup", async (event, options = {}) => {
@@ -3158,71 +2880,12 @@ class IPCHandlers {
 
     let deepgramTokenWindowId = null;
 
-    const fetchDeepgramStreamingTokenFromWindow = async (windowId) => {
-      const apiUrl = getApiUrl();
-      if (!apiUrl) throw new Error("OpenWhispr API URL not configured");
-
-      const win = BrowserWindow.fromId(windowId);
-      if (!win || win.isDestroyed()) throw new Error("Window not available for token refresh");
-
-      const cookieHeader = await getSessionCookiesFromWindow(win);
-      if (!cookieHeader) throw new Error("No session cookies available");
-
-      const tokenResponse = await fetch(`${apiUrl}/api/deepgram-streaming-token`, {
-        method: "POST",
-        headers: { Cookie: cookieHeader },
-      });
-
-      if (!tokenResponse.ok) {
-        if (tokenResponse.status === 401) {
-          const err = new Error("Session expired");
-          err.code = "AUTH_EXPIRED";
-          throw err;
-        }
-        throw new Error(`Failed to get Deepgram streaming token: ${tokenResponse.status}`);
-      }
-
-      const { token } = await tokenResponse.json();
-      if (!token) throw new Error("No token received from API");
-      return token;
+    const fetchDeepgramStreamingTokenFromWindow = async () => {
+      throw new Error("Cloud Deepgram streaming tokens are not supported.");
     };
 
-    const fetchDeepgramStreamingToken = async (event) => {
-      const apiUrl = getApiUrl();
-      if (!apiUrl) {
-        throw new Error("OpenWhispr API URL not configured");
-      }
-
-      const cookieHeader = await getSessionCookies(event);
-      if (!cookieHeader) {
-        throw new Error("No session cookies available");
-      }
-
-      const tokenResponse = await fetch(`${apiUrl}/api/deepgram-streaming-token`, {
-        method: "POST",
-        headers: {
-          Cookie: cookieHeader,
-        },
-      });
-
-      if (!tokenResponse.ok) {
-        if (tokenResponse.status === 401) {
-          const err = new Error("Session expired");
-          err.code = "AUTH_EXPIRED";
-          throw err;
-        }
-        const errorData = await tokenResponse.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `Failed to get Deepgram streaming token: ${tokenResponse.status}`
-        );
-      }
-
-      const { token } = await tokenResponse.json();
-      if (!token) {
-        throw new Error("No token received from API");
-      }
-
-      return token;
+    const fetchDeepgramStreamingToken = async () => {
+      throw new Error("Cloud Deepgram streaming tokens are not supported.");
     };
 
     ipcMain.handle("deepgram-streaming-warmup", async (event, options = {}) => {

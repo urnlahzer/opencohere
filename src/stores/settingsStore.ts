@@ -602,6 +602,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
 export const selectEffectiveReasoningProvider = (state: SettingsState) =>
   state.reasoningProvider;
 
+/** Cloud reasoning is removed — always returns false */
+export const selectIsCloudReasoningMode = (_state: SettingsState): boolean => false;
+
+/** Cloud reasoning is removed — always returns false */
+export function isCloudReasoningMode(): boolean {
+  return false;
+}
+
 // --- Convenience getters for non-React code ---
 
 export function getSettings() {

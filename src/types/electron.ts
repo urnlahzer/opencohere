@@ -762,127 +762,6 @@ declare global {
       getAutoStartEnabled?: () => Promise<boolean>;
       setAutoStartEnabled?: (enabled: boolean) => Promise<{ success: boolean; error?: string }>;
 
-      // Auth
-      authClearSession?: () => Promise<void>;
-
-      // OpenWhispr Cloud API
-      cloudTranscribe?: (
-        audioBuffer: ArrayBuffer,
-        opts: { language?: string; prompt?: string; useCase?: string; diarization?: boolean }
-      ) => Promise<{
-        success: boolean;
-        text?: string;
-        wordsUsed?: number;
-        wordsRemaining?: number;
-        limitReached?: boolean;
-        error?: string;
-        code?: string;
-      }>;
-      cloudReason?: (
-        text: string,
-        opts: {
-          model?: string;
-          agentName?: string;
-          customDictionary?: string[];
-          customPrompt?: string;
-          systemPrompt?: string;
-          language?: string;
-          locale?: string;
-        }
-      ) => Promise<{
-        success: boolean;
-        text?: string;
-        model?: string;
-        provider?: string;
-        promptMode?: string;
-        matchType?: string;
-        error?: string;
-        code?: string;
-      }>;
-      cloudStreamingUsage?: (
-        text: string,
-        audioDurationSeconds: number,
-        opts?: {
-          sendLogs?: boolean;
-          sttProvider?: string;
-          sttModel?: string;
-          sttProcessingMs?: number;
-          sttLanguage?: string;
-          audioSizeBytes?: number;
-          audioFormat?: string;
-          clientTotalMs?: number;
-        }
-      ) => Promise<{
-        success: boolean;
-        wordsUsed?: number;
-        wordsRemaining?: number;
-        limitReached?: boolean;
-        error?: string;
-        code?: string;
-      }>;
-      cloudUsage?: () => Promise<{
-        success: boolean;
-        wordsUsed?: number;
-        wordsRemaining?: number;
-        limit?: number;
-        plan?: string;
-        status?: string;
-        isSubscribed?: boolean;
-        isTrial?: boolean;
-        trialDaysLeft?: number | null;
-        currentPeriodEnd?: string | null;
-        billingInterval?: "monthly" | "annual" | null;
-        resetAt?: string;
-        error?: string;
-        code?: string;
-      }>;
-      cloudCheckout?: (opts?: {
-        plan?: "monthly" | "annual";
-        tier?: "pro" | "business";
-      }) => Promise<{
-        success: boolean;
-        url?: string;
-        error?: string;
-        code?: string;
-      }>;
-      cloudBillingPortal?: () => Promise<{
-        success: boolean;
-        url?: string;
-        error?: string;
-        code?: string;
-      }>;
-      cloudSwitchPlan?: (opts: {
-        plan: "monthly" | "annual";
-        tier: "pro" | "business";
-      }) => Promise<{
-        success: boolean;
-        alreadyOnPlan?: boolean;
-        error?: string;
-      }>;
-      cloudPreviewSwitch?: (opts: {
-        plan: "monthly" | "annual";
-        tier: "pro" | "business";
-      }) => Promise<{
-        success: boolean;
-        immediateAmount?: number;
-        currency?: string;
-        currentPriceAmount?: number;
-        currentInterval?: string;
-        newPriceAmount?: number;
-        newInterval?: string;
-        nextBillingDate?: string;
-        alreadyOnPlan?: boolean;
-        error?: string;
-      }>;
-
-      // Cloud audio file transcription
-      transcribeAudioFileCloud?: (filePath: string) => Promise<{
-        success: boolean;
-        text?: string;
-        error?: string;
-        code?: string;
-      }>;
-
       onUploadTranscriptionProgress?: (
         callback: (data: { stage: string; chunksTotal: number; chunksCompleted: number }) => void
       ) => () => void;
@@ -938,46 +817,6 @@ declare global {
       onAssemblyAiSessionEnd?: (
         callback: (data: { audioDuration?: number; text?: string }) => void
       ) => () => void;
-
-      // Referral stats
-      getReferralStats?: () => Promise<{
-        referralCode: string;
-        referralLink: string;
-        totalReferrals: number;
-        completedReferrals: number;
-        pendingReferrals: number;
-        totalMonthsEarned: number;
-        referrals: Array<{
-          id: string;
-          email: string;
-          name: string;
-          status: "pending" | "completed" | "rewarded";
-          created_at: string;
-          first_payment_at: string | null;
-          words_used: number;
-        }>;
-      }>;
-
-      sendReferralInvite?: (email: string) => Promise<{
-        success: boolean;
-        invite: {
-          id: string;
-          recipientEmail: string;
-          status: "sent" | "failed" | "opened" | "converted";
-          sentAt: string;
-        };
-      }>;
-
-      getReferralInvites?: () => Promise<{
-        invites: Array<{
-          id: string;
-          recipientEmail: string;
-          status: "sent" | "failed" | "opened" | "converted";
-          sentAt: string;
-          openedAt?: string;
-          convertedAt?: string;
-        }>;
-      }>;
 
       // Agent Mode
       updateAgentHotkey?: (hotkey: string) => Promise<{ success: boolean; message: string }>;
@@ -1159,11 +998,11 @@ declare global {
       // Dictation realtime streaming
       dictationRealtimeWarmup?: (options: {
         model?: string;
-        mode?: "byok" | "openwhispr";
+        mode?: "byok";
       }) => Promise<{ success: boolean; error?: string }>;
       dictationRealtimeStart?: (options: {
         model?: string;
-        mode?: "byok" | "openwhispr";
+        mode?: "byok";
       }) => Promise<{ success: boolean; error?: string }>;
       dictationRealtimeSend?: (buffer: ArrayBuffer) => void;
       dictationRealtimeStop?: () => Promise<{ success: boolean; text: string }>;

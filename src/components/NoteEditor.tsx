@@ -5,7 +5,6 @@ import { Button } from "./ui/button";
 import { ConfirmDialog } from "./ui/dialog.js";
 import { cn } from "./lib/utils";
 import type { NoteItem } from "../types/electron.js";
-import { syncNoteUpdateToCloud, syncNoteDeleteToCloud } from "../stores/noteStore.js";
 
 const NOTE_TYPE_COLORS: Record<NoteItem["note_type"], string> = {
   personal: "bg-foreground/5 text-foreground/50",
@@ -17,12 +16,11 @@ type SaveState = "idle" | "saving" | "saved";
 
 interface NoteEditorProps {
   note: NoteItem;
-  cloudEnabled: boolean;
   onDelete: (id: number) => void;
   onUpdate: (note: NoteItem) => void;
 }
 
-export default function NoteEditor({ note, cloudEnabled, onDelete, onUpdate }: NoteEditorProps) {
+export default function NoteEditor({ note, onDelete, onUpdate }: NoteEditorProps) {
   const { t } = useTranslation();
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
@@ -61,9 +59,6 @@ export default function NoteEditor({ note, cloudEnabled, onDelete, onUpdate }: N
           await window.electronAPI.updateNote(note.id, updates);
           const updated = { ...note, ...updates };
           onUpdate(updated);
-          if (cloudEnabled) {
-            syncNoteUpdateToCloud(updated, updates).catch(() => {});
-          }
           setSaveState("saved");
           fadeTimerRef.current = setTimeout(() => setSaveState("idle"), 2000);
         } catch {
@@ -71,7 +66,7 @@ export default function NoteEditor({ note, cloudEnabled, onDelete, onUpdate }: N
         }
       }, 800);
     },
-    [note, cloudEnabled, onUpdate]
+    [note, onUpdate]
   );
 
   useEffect(() => {

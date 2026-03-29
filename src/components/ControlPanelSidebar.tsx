@@ -34,8 +34,6 @@ interface ControlPanelSidebarProps {
   userName?: string | null;
   userEmail?: string | null;
   userImage?: string | null;
-  isSignedIn?: boolean;
-  authLoaded?: boolean;
   isProUser?: boolean;
   usageLoaded?: boolean;
   updateAction?: React.ReactNode;
@@ -53,8 +51,6 @@ export default function ControlPanelSidebar({
   userName,
   userEmail,
   userImage,
-  isSignedIn,
-  authLoaded,
   isProUser,
   usageLoaded,
   updateAction,
@@ -64,13 +60,8 @@ export default function ControlPanelSidebar({
     () => localStorage.getItem("upgradeProDismissed") === "true"
   );
 
-  const showLimitBanner = authLoaded && isSignedIn && !isProUser && isOverLimit;
-  const showUpgradeBanner =
-    !showLimitBanner &&
-    authLoaded &&
-    (!isSignedIn || usageLoaded !== false) &&
-    !isProUser &&
-    !upgradeDismissed;
+  const showLimitBanner = false;
+  const showUpgradeBanner = !showLimitBanner && !isProUser && !upgradeDismissed;
 
   const navItems: {
     id: ControlPanelView;
@@ -220,7 +211,7 @@ export default function ControlPanelSidebar({
           </div>
         )}
 
-        {isSignedIn && onOpenReferrals && (
+        {onOpenReferrals && (
           <button
             onClick={onOpenReferrals}
             aria-label={t("sidebar.referral")}
@@ -276,7 +267,7 @@ export default function ControlPanelSidebar({
             <UserCircle size={18} className="shrink-0 text-foreground/50 dark:text-foreground/45" />
           )}
           <div className="flex-1 min-w-0">
-            {isSignedIn && (userName || userEmail) ? (
+            {(userName || userEmail) ? (
               <>
                 <p className="text-xs text-foreground/80 dark:text-foreground/80 truncate leading-tight">
                   {userName || t("sidebar.defaultUser")}
@@ -287,10 +278,6 @@ export default function ControlPanelSidebar({
                   </p>
                 )}
               </>
-            ) : authLoaded && !isSignedIn ? (
-              <p className="text-xs text-foreground/45 dark:text-foreground/55">
-                {t("sidebar.notSignedIn")}
-              </p>
             ) : null}
           </div>
         </div>

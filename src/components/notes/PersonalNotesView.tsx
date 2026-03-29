@@ -16,7 +16,7 @@ import ActionPicker from "./ActionPicker";
 import ActionManagerDialog from "./ActionManagerDialog";
 import AddNotesToFolderDialog from "./AddNotesToFolderDialog";
 import { useActionProcessing } from "../../hooks/useActionProcessing";
-import { useSettingsStore, selectIsCloudReasoningMode } from "../../stores/settingsStore";
+import { useSettingsStore } from "../../stores/settingsStore";
 import { useFolderManagement } from "../../hooks/useFolderManagement";
 import { useNoteDragAndDrop } from "../../hooks/useNoteDragAndDrop";
 import { cn } from "../lib/utils";
@@ -72,7 +72,7 @@ export default function PersonalNotesView({
   const localTitleRef = useRef(localTitle);
   localTitleRef.current = localTitle;
   const { toast } = useToast();
-  const isCloudMode = useSettingsStore(selectIsCloudReasoningMode);
+  const isCloudMode = false;
   const effectiveModelId = useSettingsStore((s) => s.reasoningModel);
   const { isComplete: isOnboardingComplete, complete: completeOnboarding } = useNotesOnboarding();
 

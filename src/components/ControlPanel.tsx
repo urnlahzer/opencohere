@@ -318,14 +318,13 @@ export default function ControlPanel() {
             try {
               const [
                 { default: ReasoningService },
-                { getEffectiveReasoningModel, isCloudReasoningMode },
+                { getEffectiveReasoningModel },
               ] = await Promise.all([
                 import("../services/ReasoningService"),
                 import("../stores/settingsStore"),
               ]);
               const model = getEffectiveReasoningModel();
-              const isCloud = isCloudReasoningMode();
-              if (model || isCloud) {
+              if (model) {
                 const agentName = localStorage.getItem("agentName") || null;
                 const reasonedText = await ReasoningService.processText(rawText, model, agentName);
                 if (reasonedText && reasonedText !== rawText) {

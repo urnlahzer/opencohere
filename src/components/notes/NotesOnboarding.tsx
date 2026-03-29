@@ -23,9 +23,9 @@ interface NotesOnboardingProps {
 
 export default function NotesOnboarding({ onComplete }: NotesOnboardingProps) {
   const { t } = useTranslation();
-  const { isProUser, isProLoading, isLLMConfigured, complete } = useNotesOnboarding();
+  const { isLLMConfigured, complete } = useNotesOnboarding();
   const actions = useActions();
-  const [llmExpanded, setLlmExpanded] = useState(!isLLMConfigured && !isProUser);
+  const [llmExpanded, setLlmExpanded] = useState(!isLLMConfigured);
   const [createExpanded, setCreateExpanded] = useState(false);
   const [actionName, setActionName] = useState("");
   const [actionDescription, setActionDescription] = useState("");
@@ -117,8 +117,8 @@ export default function NotesOnboarding({ onComplete }: NotesOnboardingProps) {
           </p>
         </div>
 
-        {/* LLM Configuration — non-Pro only, deferred until pro status is known */}
-        {!isProLoading && !isProUser && (
+        {/* LLM Configuration */}
+        {(
           <div
             className={cn(
               "rounded-lg border transition-colors duration-200",

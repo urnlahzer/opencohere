@@ -20,7 +20,7 @@ import ReasoningService from "../../services/ReasoningService";
 import { getModelProvider } from "../../models/ModelRegistry";
 import logger from "../../utils/logger";
 import { UNIFIED_SYSTEM_PROMPT } from "../../config/prompts";
-import { useSettingsStore, selectIsCloudReasoningMode } from "../../stores/settingsStore";
+import { useSettingsStore } from "../../stores/settingsStore";
 
 interface PromptStudioProps {
   className?: string;
@@ -37,7 +37,6 @@ const PROVIDER_CONFIG: Record<string, ProviderConfig> = {
   anthropic: { label: "Anthropic", apiKeyStorageKey: "anthropicApiKey" },
   gemini: { label: "Gemini", apiKeyStorageKey: "geminiApiKey" },
   groq: { label: "Groq", apiKeyStorageKey: "groqApiKey" },
-  openwhispr: { label: "OpenWhispr Cloud" },
   custom: {
     label: "Custom endpoint",
     apiKeyStorageKey: "openaiApiKey",
@@ -71,7 +70,7 @@ export default function PromptStudio({ className = "" }: PromptStudioProps) {
   const { agentName } = useAgentName();
 
   const effectiveModel = useSettingsStore((s) => s.reasoningModel);
-  const isCloudMode = useSettingsStore(selectIsCloudReasoningMode);
+  const isCloudMode = false;
   const useReasoningModel = useSettingsStore((s) => s.useReasoningModel);
   const reasoningModel = useSettingsStore((s) => s.reasoningModel);
 
