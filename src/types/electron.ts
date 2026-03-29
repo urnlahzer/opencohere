@@ -778,12 +778,6 @@ declare global {
         error?: string;
       }>;
 
-      // Usage limit events
-      notifyLimitReached?: (data: { wordsUsed: number; limit: number }) => void;
-      onLimitReached?: (
-        callback: (data: { wordsUsed: number; limit: number }) => void
-      ) => () => void;
-
       // AssemblyAI Streaming
       assemblyAiStreamingWarmup?: (options?: {
         sampleRate?: number;

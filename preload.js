@@ -470,10 +470,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     (callback) => (_event, data) => callback(data)
   ),
 
-  // Usage limit events (for showing UpgradePrompt in ControlPanel)
-  notifyLimitReached: (data) => ipcRenderer.send("limit-reached", data),
-  onLimitReached: registerListener("limit-reached", (callback) => (_event, data) => callback(data)),
-
   // Globe key listener for hotkey capture (macOS only)
   onGlobeKeyPressed: (callback) => {
     const listener = () => callback?.();
